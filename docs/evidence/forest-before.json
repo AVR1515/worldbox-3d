@@ -1,0 +1,161 @@
+[
+  {
+    "variant": "full",
+    "repetition": 0,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 487,
+    "elapsed": 60.0085,
+    "droppedSeconds": 19.931299999999915,
+    "simulatedRealRatio": 0.6699050967779521,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 115.594204,
+      "p95": 174.721301,
+      "p99": 178.686618
+    },
+    "frameMs": {
+      "median": 116.69999999999709,
+      "p95": 233.3000000000029,
+      "p99": 299.8999999999942
+    },
+    "simulationMs": {
+      "median": 0.2999999988824129,
+      "p95": 1,
+      "p99": 2.799999998882413
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.2999999988824129,
+      "p99": 6.900000000372529
+    },
+    "renderCpuMs": {
+      "median": 1.1000000014901161,
+      "p95": 2.199999999254942,
+      "p99": 3.5
+    },
+    "triangles": {
+      "median": 12634313,
+      "p95": 42616265,
+      "p99": 42650057
+    },
+    "calls": {
+      "median": 36,
+      "p95": 39,
+      "p99": 39
+    }
+  },
+  {
+    "variant": "full",
+    "repetition": 1,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 257,
+    "elapsed": 60.01769999999925,
+    "droppedSeconds": 38.58529999999993,
+    "simulatedRealRatio": 0.35767226445974637,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 215.502804,
+      "p95": 323.804371,
+      "p99": 445.774049
+    },
+    "frameMs": {
+      "median": 233.10000000000582,
+      "p95": 483.1999999999971,
+      "p99": 516.3999999999942
+    },
+    "simulationMs": {
+      "median": 0.2000000011175871,
+      "p95": 0.40000000037252903,
+      "p99": 0.7999999988824129
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.10000000149011612,
+      "p99": 6.699999999254942
+    },
+    "renderCpuMs": {
+      "median": 0.900000000372529,
+      "p95": 2.699999999254942,
+      "p99": 5
+    },
+    "triangles": {
+      "median": 12634313,
+      "p95": 42650057,
+      "p99": 42650057
+    },
+    "calls": {
+      "median": 36,
+      "p95": 39,
+      "p99": 39
+    }
+  },
+  {
+    "variant": "full",
+    "repetition": 2,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 470,
+    "elapsed": 60.0055,
+    "droppedSeconds": 22.612300000000033,
+    "simulatedRealRatio": 0.6232761996816605,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 115.599954,
+      "p95": 177.620456,
+      "p99": 345.854949
+    },
+    "frameMs": {
+      "median": 116.69999999998254,
+      "p95": 233.40000000002328,
+      "p99": 383.29999999998836
+    },
+    "simulationMs": {
+      "median": 0.2000000011175871,
+      "p95": 0.5,
+      "p99": 0.8000000007450581
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.10000000149011612,
+      "p99": 5.100000001490116
+    },
+    "renderCpuMs": {
+      "median": 1.299999998882413,
+      "p95": 2.200000001117587,
+      "p99": 3.099999999627471
+    },
+    "triangles": {
+      "median": 12634313,
+      "p95": 42650057,
+      "p99": 42650057
+    },
+    "calls": {
+      "median": 36,
+      "p95": 38,
+      "p99": 39
+    }
+  }
+]

@@ -1,0 +1,64 @@
+[
+  {
+    "scenario": "mature-flat-war",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 60000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1492,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 138077697,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 1.0001921524068011,
+    "droppedSeconds": 0,
+    "elapsed": 60.021799999999814,
+    "frames": 3567,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 20.5
+    },
+    "simulationMs": {
+      "median": 4.399999999906868,
+      "p95": 15.099999999627471,
+      "p99": 16.600000000093132
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.6999999997206032,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 11.399999999906868,
+      "p95": 12.399999999906868,
+      "p99": 14.899999999906868
+    },
+    "calls": {
+      "median": 131,
+      "p95": 131,
+      "p99": 133
+    },
+    "casualties": 8,
+    "cityOwners": [
+      1,
+      2,
+      1,
+      2
+    ]
+  }
+]

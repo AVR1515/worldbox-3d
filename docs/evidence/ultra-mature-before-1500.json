@@ -1,0 +1,158 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 166196969,
+    "longTasks": {
+      "count": 861,
+      "totalMs": 50939,
+      "maxMs": 124
+    },
+    "simulatedRealRatio": 0.999261729108571,
+    "droppedSeconds": 0.08380000000001009,
+    "elapsed": 120.05530000001193,
+    "frames": 2539,
+    "frameMs": {
+      "median": 50,
+      "p95": 66.70000000000437,
+      "p99": 83.40000000000146
+    },
+    "simulationMs": {
+      "median": 14.900000005960464,
+      "p95": 33.39999997615814,
+      "p99": 51.69999998807907
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7000000178813934,
+      "p99": 0.9000000059604645
+    },
+    "renderCpuMs": {
+      "median": 30.80000001192093,
+      "p95": 34,
+      "p99": 42.599999994039536
+    },
+    "calls": {
+      "median": 729,
+      "p95": 737,
+      "p99": 741
+    }
+  },
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 1,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 268036273,
+    "longTasks": {
+      "count": 1186,
+      "totalMs": 72248,
+      "maxMs": 153
+    },
+    "simulatedRealRatio": 0.9964337721361708,
+    "droppedSeconds": 0.3996999999999824,
+    "elapsed": 120.0615,
+    "frames": 2274,
+    "frameMs": {
+      "median": 50,
+      "p95": 66.79999999999563,
+      "p99": 83.5
+    },
+    "simulationMs": {
+      "median": 15.900000005960464,
+      "p95": 36.70000001788139,
+      "p99": 50.900000005960464
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7000000178813934,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 33.80000001192093,
+      "p95": 38.099999994039536,
+      "p99": 45.20000001788139
+    },
+    "calls": {
+      "median": 729,
+      "p95": 737,
+      "p99": 741
+    }
+  },
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 2,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 179599413,
+    "longTasks": {
+      "count": 1258,
+      "totalMs": 74948,
+      "maxMs": 121
+    },
+    "simulatedRealRatio": 0.9993874274340768,
+    "droppedSeconds": 0.06669999999997522,
+    "elapsed": 120.04019999998808,
+    "frames": 2281,
+    "frameMs": {
+      "median": 50,
+      "p95": 66.80000000000291,
+      "p99": 83.40000000000146
+    },
+    "simulationMs": {
+      "median": 15.600000023841858,
+      "p95": 38.10000002384186,
+      "p99": 49.19999998807907
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7999999523162842,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 34.5,
+      "p95": 38.80000001192093,
+      "p99": 47.599999994039536
+    },
+    "calls": {
+      "median": 729,
+      "p95": 733,
+      "p99": 733
+    }
+  }
+]

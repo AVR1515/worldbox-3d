@@ -1,0 +1,106 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 500,
+    "worldSize": 132,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 208442169,
+    "longTasks": {
+      "count": 9,
+      "totalMs": 527,
+      "maxMs": 71
+    },
+    "simulatedRealRatio": 1.0000919273611257,
+    "droppedSeconds": 0,
+    "elapsed": 120.02230000001192,
+    "frames": 6865,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17.799999999995634,
+      "p99": 33.39999999999418
+    },
+    "simulationMs": {
+      "median": 2,
+      "p95": 14.699999988079071,
+      "p99": 24.400000035762787
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.30000001192092896,
+      "p99": 0.699999988079071
+    },
+    "renderCpuMs": {
+      "median": 10.600000023841858,
+      "p95": 12.5,
+      "p99": 16.100000023841858
+    },
+    "calls": {
+      "median": 725,
+      "p95": 729,
+      "p99": 733
+    }
+  },
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 1,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 500,
+    "worldSize": 132,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 126140081,
+    "longTasks": {
+      "count": 2,
+      "totalMs": 119,
+      "maxMs": 60
+    },
+    "simulatedRealRatio": 0.9998625189035961,
+    "droppedSeconds": 0,
+    "elapsed": 120.0165,
+    "frames": 6895,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17.10000000000582,
+      "p99": 33.39999999999418
+    },
+    "simulationMs": {
+      "median": 2.099999964237213,
+      "p95": 20.5,
+      "p99": 24.19999998807907
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.30000001192092896,
+      "p99": 0.699999988079071
+    },
+    "renderCpuMs": {
+      "median": 10.199999988079071,
+      "p95": 11.699999988079071,
+      "p99": 15.5
+    },
+    "calls": {
+      "median": 725,
+      "p95": 733,
+      "p99": 733
+    }
+  }
+]

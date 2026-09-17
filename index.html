@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>WorldBox 3D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌍%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./node_modules/three/build/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <div id="mainMenu" class="menuOverlay">
+    <div class="menuCard homeCard">
+      <div class="menuEyebrow">SIMULADOR DE MUNDOS VIVOS</div>
+      <div class="menuTitle">WorldBox<span>3D</span></div>
+      <p class="menuTag">Un mundo en tus manos.<br>Una historia que todavía no existe.</p>
+      <button id="btnPlay" class="menuBtnPrimary">✦ Crear nuevo mundo</button>
+      <button id="btnContinue" class="menuBtnSecondary" disabled>▷ Continuar partida</button>
+      <button id="btnOptionsMenu" class="menuBtnSecondary">⚙ Opciones</button>
+      <button id="btnHelpMenu" class="menuBtnSecondary">❓ Cómo jugar</button>
+      <p class="saveHint" id="saveHint">Crea tu primer mundo para comenzar una historia.</p>
+    </div>
+    <div class="homeCaption"><span>EXPLORA · CREA · TRANSFORMA</span><h2>Pequeños mundos.<br>Posibilidades infinitas.</h2><p>Paisajes generados dentro de WorldBox 3D</p></div>
+  </div>
+
+  <div id="mapCreator" class="menuOverlay hidden">
+    <div class="menuCard wide">
+      <div class="creatorBanner"><div class="menuEyebrow">EL COMIENZO DE UNA HISTORIA</div><div class="menuTitle small">Crea tu mundo</div><p>Elige su forma. Dale vida. Decide su destino.</p></div>
+
+      <div class="creatorSection">
+        <label>Tipo de mapa</label>
+        <div class="optionGrid" id="mapTypeGrid">
+          <button class="optionBtn" data-value="island"><span class="oIco">🏝️</span><span>Isla</span></button>
+          <button class="optionBtn active" data-value="continents"><span class="oIco">🌎</span><span>Continentes</span></button>
+          <button class="optionBtn" data-value="archipelago"><span class="oIco">🏖️</span><span>Archipiélago</span></button>
+          <button class="optionBtn" data-value="ring"><span class="oIco">💍</span><span>Anillo</span></button>
+        </div>
+      </div>
+
+      <div class="creatorGrid2">
+      <div class="creatorSection">
+        <label>Tamaño del mundo</label>
+        <div class="optionGrid" id="sizeGrid">
+          <button class="optionBtn" data-value="132"><span>Pequeño</span></button>
+          <button class="optionBtn" data-value="180"><span>Mediano</span></button>
+          <button class="optionBtn active" data-value="240"><span>Grande</span></button>
+          <button class="optionBtn" data-value="720"><span>Gigante · 9× área</span></button>
+        </div>
+      </div>
+
+      <div class="creatorSection">
+        <label>Relieve</label><p class="optionHint">Desde llanuras suaves hasta grandes cumbres.</p>
+        <div class="optionGrid three" id="mountainGrid">
+          <button class="optionBtn" data-value="0"><span class="oIco">🫓</span><span>Llano</span></button>
+          <button class="optionBtn active" data-value="1"><span class="oIco">⛰️</span><span>Normal</span></button>
+          <button class="optionBtn" data-value="2"><span class="oIco">🏔️</span><span>Montañoso</span></button>
+        </div>
+      </div>
+
+      <div class="creatorSection">
+        <label>Clima</label><p class="optionHint">Mixto combina regiones áridas, árticas, tropicales y templadas.</p>
+        <div class="optionGrid three" id="climateGrid">
+          <button class="optionBtn" data-value="templado"><span class="oIco">🌤️</span><span>Templado</span></button>
+          <button class="optionBtn active" data-value="mixto"><span class="oIco">🌍</span><span>Mixto</span></button>
+          <button class="optionBtn" data-value="tropical"><span class="oIco">🌴</span><span>Tropical</span></button>
+        </div>
+      </div>
+
+      <div class="creatorSection">
+        <label>Vegetación</label><p class="optionHint">Controla la abundancia de árboles y el verdor.</p>
+        <div class="optionGrid three" id="humidityGrid">
+          <button class="optionBtn" data-value="arido"><span class="oIco">🌾</span><span>Escasa</span></button>
+          <button class="optionBtn active" data-value="normal"><span class="oIco">🌳</span><span>Normal</span></button>
+          <button class="optionBtn" data-value="exuberante"><span class="oIco">🌲</span><span>Densa</span></button>
+        </div>
+      </div>
+
+
+      </div>
+
+      <div class="creatorSection">
+        <label>Civilizaciones al empezar</label><p class="optionHint">Puebla el mundo con pueblos rivales (humanos, orcos, elfos, enanos) listos para comerciar, chocar y hacer la guerra desde el primer día.</p>
+        <div class="optionGrid" id="civGrid">
+          <button class="optionBtn active" data-value="none"><span class="oIco">🌱</span><span>Mundo vacío</span></button>
+          <button class="optionBtn" data-value="rivals"><span class="oIco">⚔️</span><span>Civilizaciones rivales</span></button>
+        </div>
+      </div>
+
+      <div class="creatorSection seedRow">
+        <label for="seedInput">Semilla (opcional)</label>
+        <div class="seedInputRow">
+          <input type="number" id="seedInput" placeholder="Aleatoria" />
+          <button id="randomSeedBtn" title="Semilla aleatoria">🎲</button>
+        </div>
+      </div>
+
+      <div class="creatorActions">
+        <button id="btnBack" class="menuBtnSecondary">← Volver</button>
+        <button id="btnGenerate" class="menuBtnPrimary">✨ Generar y jugar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pauseMenu" class="hidden" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <div class="pauseCard"><div class="menuEyebrow">WORLDBOX 3D</div><h1 id="pauseTitle">Tu mundo espera</h1><p class="pauseSubtitle">Partida en pausa</p>
+    <button id="resumeGameBtn" class="menuBtnPrimary">▷ Continuar partida</button>
+    <h3>PARTIDAS</h3><div class="pauseGrid">      <button class="pauseAction" id="saveBtn" title="Guardar mundo">💾 Guardar partida</button>
+      <button class="pauseAction" id="loadBtn" title="Cargar mundo guardado">📂 Cargar última partida</button>
+      <button class="pauseAction" id="saveManagerBtn" title="Administrar ranuras de guardado">🗃️ Administrar partidas</button></div>
+    <h3>JUEGO</h3><div class="pauseGrid">      <button class="pauseAction" id="settingsBtn" title="Ajustes">⚙️ Ajustes</button>
+      <button class="pauseAction" id="regenBtn" title="Nuevo mundo">🌍 Recrear mundo</button>
+      <button class="pauseAction" id="helpBtn" title="Ayuda">❓ Cómo jugar</button>
+      <button class="pauseAction" id="diagnosticsBtn" title="Diagnóstico de rendimiento">📊 Rendimiento</button></div>
+    <button id="exitToMenuBtn" class="pauseAction exitAction">← Guardar y salir al menú principal</button><p class="pauseFootnote">Esc para volver · Tu mundo se conserva al salir</p>
+    </div>
+  </div>
+  <div id="hud-top">
+    <div id="topLeft">
+      <button id="gameMenuBtn" title="Menú del juego (Esc)" aria-label="Menú del juego">☰ Menú</button>
+    <div id="brand">🌍 WorldBox<span>3D</span></div>
+    </div>
+    <div id="stats">
+      <div class="stat"><span class="ico">☀️</span><span id="dayCounter">Día 1</span></div>
+      <div class="stat herb"><span class="ico">🐑</span><span id="popHerb">0</span></div>
+      <div class="stat carn"><span class="ico">🐺</span><span id="popCarn">0</span></div>
+      <div class="stat" title="Peces"><span class="ico">🐟</span><span id="popFish">0</span></div>
+      <div class="stat human" title="Población civil total"><span class="ico">👥</span><span id="popCivil">0</span></div>
+      <div class="stat"><span class="ico">🌳</span><span id="popTrees">0</span></div>
+      <div class="stat village"><span class="ico">🏘️</span><span id="popVillages">0</span></div>
+      <div class="stat empire"><span class="ico">🏰</span><span id="popEmpires">0</span></div>
+      <div class="stat" id="fpsStat"><span class="ico">⚙️</span><span id="fps">60</span></div>
+    </div>
+    <div id="topActions">
+      <button id="aerialViewBtn" title="Vista aérea" aria-label="Vista aérea" aria-pressed="false">🗺️</button>
+      <button id="humanViewBtn" title="Vista humana" aria-label="Vista humana" aria-pressed="false">🚶</button>
+      <button id="fullscreenBtn" title="Entrar en pantalla completa" aria-label="Entrar en pantalla completa" aria-pressed="false">⛶</button>
+
+
+
+      <button id="layersBtn" title="Capas del mapa">🗂️</button>
+      <button id="empiresBtn" title="Imperios">🏰</button>
+      <button id="historyBtn" title="Historia y estadísticas">📜</button>
+      <button id="lawsBtn" title="Leyes del mundo">⚖️</button>
+
+
+
+
+    </div>
+  </div>
+
+  <div id="hoverInfo"></div>
+
+  <div id="possessBanner" class="hidden">
+    <span class="ico">🎮</span> Controlando a <b class="possessName">—</b> <span class="hint">Esc para soltar</span>
+    <button id="viewModeBtn" class="hidden" title="Cambiar a primera persona" aria-label="Cambiar a primera persona" aria-pressed="false">🎥 3ª persona</button>
+  </div>
+
+  <div id="inspectPanel" class="hidden"></div>
+
+  <div id="layersPanel" class="sidePanel hidden">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeLayersBtn">✕</button>
+    <div class="panelTitle">🗂️ Capas del mapa</div>
+    <div id="layersList">
+      <label class="lawToggle"><span><b>🗺️ Territorios</b><small>Colorea el mapa según el imperio dueño de cada zona.</small></span><input type="checkbox" data-layer="territory" /></label>
+      <label class="lawToggle"><span><b>🏷️ Nombres de ciudades</b><small>Muestra el nombre y la población sobre cada asentamiento.</small></span><input type="checkbox" data-layer="cityLabels" checked /></label>
+      <label class="panelField"><span>Capa social</span><select id="socialLayerSelect"><option value="none">Ninguna</option><option value="culture">Culturas</option><option value="religion">Religiones</option><option value="language">Idiomas</option><option value="army">Ejércitos</option></select></label>
+    </div>
+  </div>
+
+  <div id="empiresPanel" class="hidden">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeEmpiresBtn">✕</button>
+    <div class="panelTitle">🏰 Imperios</div>
+    <div id="empiresList"></div>
+  </div>
+
+  <div id="historyPanel" class="sidePanel hidden">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeHistoryBtn">✕</button>
+    <div class="panelTitle">📜 Historia del mundo</div>
+    <canvas id="populationChart" width="320" height="120" aria-label="Gráfica de población"></canvas>
+    <div class="chartLegend"><span class="civilLine">Civilización</span><span class="wildLine">Fauna</span></div>
+    <canvas id="societyChart" width="320" height="90" aria-label="Gráfica de aldeas e imperios"></canvas>
+    <div class="chartLegend"><span class="civilLine">Aldeas</span><span class="wildLine">Imperios</span></div>
+    <select id="historyFilter" aria-label="Filtrar historial"><option value="all">Todos los acontecimientos</option><option value="war">Guerras y política</option><option value="nature">Naturaleza y desastres</option><option value="society">Sociedad y progreso</option></select>
+    <div id="historyList"></div>
+    <button id="clearHistoryBtn" class="panelActionBtn">Limpiar historial</button>
+  </div>
+
+  <div id="saveManagerPanel" class="sidePanel hidden">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeSaveManagerBtn">✕</button>
+    <div class="panelTitle">🗃️ Mundos guardados</div>
+    <p class="panelHint">Tres ranuras independientes con miniatura. También puedes exportarlas como archivo.</p>
+    <div id="saveSlots"></div>
+    <label class="importBtn">📥 Importar mundo<input id="importSaveInput" type="file" accept="application/json,.json" hidden /></label>
+  </div>
+
+  <div id="settingsPanel" class="sidePanel hidden" role="dialog" aria-modal="true" aria-label="Ajustes del juego">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeSettingsBtn">✕</button>
+    <div class="panelTitle">⚙️ Ajustes</div>
+    <label class="panelField"><span>Calidad gráfica</span><select id="qualitySetting"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="ultra">Ultra</option></select></label>
+    <label class="panelField"><span>Límite de población</span><input id="populationSetting" type="range" min="300" max="2400" step="100" /><output id="populationSettingValue"></output></label>
+    <label class="lawToggle"><span><b>Sombras</b><small>Desactívalas para mejorar el rendimiento.</small></span><input id="shadowsSetting" type="checkbox" /></label>
+    <label class="panelField"><span>Autoguardado</span><select id="autosaveSetting"><option value="0">Desactivado</option><option value="30">Cada 30 s</option><option value="60">Cada minuto</option><option value="180">Cada 3 min</option></select></label>
+    <label class="lawToggle"><span><b>Sonido</b><small>Efectos de acciones y acontecimientos.</small></span><input id="audioSetting" type="checkbox" /></label>
+    <label class="lawToggle"><span><b>Reducir movimiento</b><small>Suaviza o elimina animaciones de interfaz.</small></span><input id="motionSetting" type="checkbox" /></label>
+    <label class="lawToggle"><span><b>Alto contraste</b><small>Refuerza bordes y legibilidad.</small></span><input id="contrastSetting" type="checkbox" /></label>
+  </div>
+
+  <div id="lawsPanel" class="sidePanel hidden">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeLawsBtn">✕</button>
+    <div class="panelTitle">⚖️ Leyes del mundo</div>
+    <div id="lawsList">
+      <label class="lawToggle"><span><b>Envejecimiento</b><small>Las criaturas envejecen y mueren de vejez.</small></span><input type="checkbox" data-law="aging" checked /></label>
+      <label class="lawToggle"><span><b>Hambre</b><small>La fauna caza y los ciudadanos consumen reservas.</small></span><input type="checkbox" data-law="hunger" checked /></label>
+      <label class="lawToggle"><span><b>Reproducción</b><small>Permite nacimientos naturales.</small></span><input type="checkbox" data-law="reproduction" checked /></label>
+      <label class="lawToggle"><span><b>Enfermedades</b><small>La infección daña y se propaga entre seres.</small></span><input type="checkbox" data-law="disease" checked /></label>
+      <label class="lawToggle"><span><b>Propagación del fuego</b><small>El fuego puede saltar a árboles vecinos.</small></span><input type="checkbox" data-law="fireSpread" checked /></label>
+      <label class="lawToggle"><span><b>Regeneración natural</b><small>Los bosques vuelven a crecer con el tiempo.</small></span><input type="checkbox" data-law="naturalRegrowth" checked /></label>
+      <label class="lawToggle"><span><b>Clima dinámico</b><small>La lluvia aparece, enfría el terreno y apaga incendios.</small></span><input type="checkbox" data-law="weather" checked /></label>
+      <label class="lawToggle"><span><b>Diplomacia</b><small>Los reinos generan tensión, guerras y paz.</small></span><input type="checkbox" data-law="diplomacy" checked /></label>
+      <label class="lawToggle"><span><b>Rebeliones</b><small>Las ciudades con baja lealtad pueden independizarse.</small></span><input type="checkbox" data-law="rebellions" checked /></label>
+      <label class="lawToggle"><span><b>Desastres naturales</b><small>Permite terremotos, incendios y meteoritos espontáneos.</small></span><input type="checkbox" data-law="naturalDisasters" /></label>
+    </div>
+  </div>
+
+  <div id="diagnosticsPanel" class="sidePanel hidden" aria-live="polite">
+    <button class="closeBtn" aria-label="Cerrar ventana" id="closeDiagnosticsBtn">✕</button>
+    <div class="panelTitle">📊 Diagnóstico</div>
+    <div id="diagnosticsSummary" class="diagnosticsGrid"></div>
+    <div class="diagnosticsSectionTitle">Errores recientes</div>
+    <div id="diagnosticsErrors" class="diagnosticsErrors"></div>
+    <p class="diagnosticsHint">También puedes abrir o cerrar este panel con F3.</p>
+  </div>
+
+  <div id="speedBar">
+    <button class="speedBtn" data-speed="0">⏸</button>
+    <button class="speedBtn active" data-speed="1">▶</button>
+    <button class="speedBtn" data-speed="2">⏩</button>
+    <button class="speedBtn" data-speed="4">⏭</button>
+    <button class="speedBtn" data-speed="8">8x</button>
+    <span class="speedDivider"></span>
+    <button id="dayLockBtn" title="Día permanente">☀️</button>
+  </div>
+
+  <div id="minimapWrap" class="hidden"><canvas id="minimap" width="168" height="168" aria-label="Minimapa interactivo"></canvas><span>MINIMAPA</span></div>
+
+  <div id="touchControls" aria-label="Controles táctiles">
+    <button data-touch="up" aria-label="Mover arriba">▲</button><button data-touch="left" aria-label="Mover izquierda">◀</button><button data-touch="down" aria-label="Mover abajo">▼</button><button data-touch="right" aria-label="Mover derecha">▶</button>
+  </div>
+
+  <div id="hud-bottom">
+    <div id="brushRow">
+      <label for="brushSize">Tamaño</label>
+      <input type="range" id="brushSize" min="1" max="9" step="1" value="3" />
+      <span id="brushSizeVal">3</span>
+    </div>
+    <div id="powerCategories" aria-label="Categorías de poderes"></div>
+    <div id="powerSubcategories" aria-label="Subcategorías de poderes"></div>
+    <div id="toolbar"></div>
+  </div>
+
+  <div id="helpModal" class="hidden">
+    <div class="modalBox">
+      <h2>🌍 WorldBox 3D — Controles</h2>
+      <ul>
+        <li><b>Click izquierdo</b>: usar el poder seleccionado sobre el terreno</li>
+        <li><b>🖐️ Inspeccionar</b>: haz clic en una criatura, casa o bandera para ver su ficha (nombre, rasgos, salud, profesión...)</li>
+        <li><b>Arrastrar con click derecho</b>: rotar la cámara</li>
+        <li><b>Arrastrar con click central</b>: desplazar la cámara</li>
+        <li><b>Rueda del mouse</b>: acercar / alejar</li>
+        <li><b>WASD / Flechas</b>: mover la cámara por el mapa</li>
+        <li><b>🗂️ Capas</b>: activa o desactiva los territorios de los imperios y los nombres flotantes de las ciudades</li>
+        <li><b>🏰 Imperios</b>: lista reinos, reyes y relaciones — haz clic en un chip de relación para forzar la guerra o la paz entre dos imperios</li>
+        <li><b>🤝 Diplomacia</b>: haz clic en dos imperios seguidos sobre el mapa para forzar guerra o paz entre ellos</li>
+        <li><b>🎮 Poseer</b>: haz clic en un ser para controlarlo directamente con WASD; vuelve a hacer clic en el poder o pulsa Esc para soltarlo</li>
+        <li><b>🐸 Pantano</b>: pinta zonas anegadas con vegetación muerta; ⛵ los barcos zarpan solos desde aldeas costeras para colonizar tierras lejanas</li>
+        <li><b>🐟 Peces</b>: viven solo en el agua; los 🪓 leñadores ahora talan árboles reales del mapa en vez de generar madera de la nada</li>
+        <li><b>🌧️❄️☀️🌋 Clima</b>: provoca lluvia, congela el agua, calienta el terreno o crea lava; las temperaturas extremas afectan a los seres</li>
+        <li><b>✨ Estados</b>: bendice, envenena, protege, enloquece o maldice criaturas; cada efecto cambia sus estadísticas y apariencia durante un tiempo</li>
+        <li><b>🐉 Fantasía</b>: dragones, demonios, esqueletos, magos, hadas, fantasmas y alienígenas tienen vuelo, resistencias y conductas distintas</li>
+        <li><b>⛏️ Minerales</b>: piedra, oro y gemas aparecen físicamente en el mapa y los mineros agotan los depósitos cercanos</li>
+        <li><b>🧭 Rutas</b>: los seres rodean agua, pendientes y construcciones; los barcos navegan alrededor de islas y el hielo bloquea el paso marítimo</li>
+        <li><b>⭐ Favoritos</b>: doble clic sobre un ser (o el botón ⭐ al inspeccionarlo) hace que la cámara lo siga de por vida — Esc para soltarlo</li>
+        <li><b>🧲 Imán</b>: arrastra el cursor sobre un grupo de criaturas para reubicarlas; 💣🧨☢️ bomba, mega-bomba y nuclear detonan con distinto radio</li>
+        <li><b>⚔️ Ejércitos</b>: los soldados llevan espada, lanza o arco (🏹 los arqueros atacan a distancia) y el líder de cada grupo se distingue con un tono dorado</li>
+        <li><b>👪 Familias y clanes</b>: los ciudadanos forman parejas, tienen descendencia, heredan rasgos y siguen linajes que participan en la sucesión política</li>
+        <li><b>🎒 Progresión</b>: los individuos ganan experiencia y niveles, guardan objetos y equipan herramientas, armas y armaduras fabricadas por sus ciudades</li>
+        <li><b>🏭 Producción</b>: minas, talleres, herrerías, almacenes, pesquerías, cuarteles y mercados transforman recursos físicos en bienes</li>
+        <li><b>⛵ Navegación civil</b>: además del transporte colonizador existen barcos pesqueros y rutas comerciales entre costas amigas</li>
+        <li><b>🤝 Política avanzada</b>: los reinos desarrollan opinión, firman tratados y alianzas, fijan objetivos de guerra y necesitan derribar defensas durante un asedio</li>
+        <li><b>🧬 Genes y adaptación</b>: fuerza, vitalidad, velocidad, fertilidad y tolerancia climática se mezclan entre padres e hijos; las poblaciones desarrollan subespecies adaptadas</li>
+        <li><b>🗣️ Sociedades vivas</b>: culturas, idiomas y religiones nacen en las aldeas, desbloquean tradiciones y se difunden con migraciones y comercio</li>
+        <li><b>😊 Felicidad y memoria</b>: salud, hambre, familia, guerra, clima e identidad afectan el bienestar; nacimientos, pérdidas, viajes y victorias dejan recuerdos persistentes</li>
+        <li><b>✏️ Renombrar</b>: el botón de lápiz en la ficha de una aldea o en el panel de Imperios permite cambiar su nombre; el cuadro de color del imperio permite cambiar su color</li>
+        <li><b>💾 / 📂 / 🗃️ Guardar y cargar</b>: conserva el mundo, ofrece tres ranuras con miniatura y permite importar o exportar archivos JSON</li>
+        <li><b>🗺️ Minimapa y capas</b>: haz clic en el minimapa para viajar y visualiza culturas, religiones, idiomas o ejércitos sobre el mundo</li>
+        <li><b>⚙️ Ajustes</b>: controla calidad, población, sombras, autoguardado, sonido, movimiento reducido y alto contraste</li>
+        <li><b>📊 / F3 Diagnóstico</b>: muestra FPS, tiempo por cuadro, objetos, llamadas de dibujo y errores recientes</li>
+        <li><b>⚖️ Leyes</b>: activa o desactiva envejecimiento, hambre, reproducción, plagas, fuego, clima, diplomacia y rebeliones</li>
+        <li><b>Esc / ☰ Menú</b>: pausa el juego; guarda, carga, administra partidas, abre ajustes o vuelve al inicio.</li>
+        <li><b>Espacio / 1–4</b>: pausar o cambiar la velocidad</li>
+      </ul>
+      <p>Elige una categoría y un poder divino en la barra inferior, ajusta el tamaño del pincel y da forma a tu mundo. Cada celda tiene bioma y temperatura propios; las civilizaciones consumen comida, extraen recursos limitados, fundan aldeas, comercian, luchan, conquistan y se rebelan. Usa 📜 para revisar la crónica y la evolución de la población.</p>
+      <button id="closeHelp">Entendido</button>
+    </div>
+  </div>
+
+  <div id="tutorialOverlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+    <div class="tutorialCard"><div id="tutorialStep">1 / 4</div><h2 id="tutorialTitle">Bienvenido a WorldBox 3D</h2><p id="tutorialText"></p><div class="tutorialActions"><button id="skipTutorial">Saltar</button><button id="nextTutorial">Siguiente</button></div></div>
+  </div>
+
+  <dialog id="nameEditor" aria-labelledby="nameEditorTitle"><form method="dialog">
+    <div class="menuEyebrow">EDITAR IDENTIDAD</div><h2 id="nameEditorTitle">Cambiar nombre</h2>
+    <label for="nameEditorInput">Nombre</label><input id="nameEditorInput" maxlength="60" autocomplete="off" required />
+    <div class="creatorActions"><button value="cancel" formnovalidate class="menuBtnSecondary">Cancelar</button><button value="save" class="menuBtnPrimary">Guardar cambios</button></div>
+  </form></dialog>
+  <div id="toast"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

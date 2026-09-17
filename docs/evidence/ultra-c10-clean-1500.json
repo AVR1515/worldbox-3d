@@ -1,0 +1,167 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 126362673,
+    "longTasks": {
+      "count": 4,
+      "totalMs": 236,
+      "maxMs": 64
+    },
+    "simulatedRealRatio": 0.999838359465164,
+    "droppedSeconds": 0,
+    "elapsed": 120.01940000000015,
+    "frames": 6987,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 33.39999999999418
+    },
+    "simulationMs": {
+      "median": 4.399999999906868,
+      "p95": 14.800000000046566,
+      "p99": 17.5
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.6999999999534339,
+      "p99": 1.1000000000931323
+    },
+    "renderCpuMs": {
+      "median": 11.400000000139698,
+      "p95": 14,
+      "p99": 18
+    },
+    "calls": {
+      "median": 167,
+      "p95": 175,
+      "p99": 175
+    }
+  },
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 1,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 135068749,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 0.9998666844420198,
+    "droppedSeconds": 0,
+    "elapsed": 120.016,
+    "frames": 7024,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 33.30000000000291
+    },
+    "simulationMs": {
+      "median": 4.5,
+      "p95": 13.199999999953434,
+      "p99": 16
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7000000001862645,
+      "p99": 1.1999999999534339
+    },
+    "renderCpuMs": {
+      "median": 12.300000000046566,
+      "p95": 13,
+      "p99": 15.899999999906868
+    },
+    "calls": {
+      "median": 167,
+      "p95": 175,
+      "p99": 179
+    }
+  },
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 2,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 164984393,
+    "longTasks": {
+      "count": 1,
+      "totalMs": 75,
+      "maxMs": 75
+    },
+    "simulatedRealRatio": 0.9999777844423905,
+    "droppedSeconds": 0,
+    "elapsed": 120.036,
+    "frames": 7061,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 33.30000000000291
+    },
+    "simulationMs": {
+      "median": 4.599999999860302,
+      "p95": 12.5,
+      "p99": 16.4000000001397
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7000000001862645,
+      "p99": 1.2000000001862645
+    },
+    "renderCpuMs": {
+      "median": 11.899999999906868,
+      "p95": 12.800000000046566,
+      "p99": 15.699999999953434
+    },
+    "calls": {
+      "median": 167,
+      "p95": 171,
+      "p99": 171
+    }
+  }
+]

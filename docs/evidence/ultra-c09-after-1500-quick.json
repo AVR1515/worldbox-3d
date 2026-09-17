@@ -1,0 +1,136 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 20000,
+    "duration": 60000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 287659571,
+    "longTasks": {
+      "count": 16,
+      "totalMs": 1043,
+      "maxMs": 79
+    },
+    "simulatedRealRatio": 1.000134313265719,
+    "droppedSeconds": 0,
+    "elapsed": 60.05859999996424,
+    "frames": 2080,
+    "frameMs": {
+      "median": 33.29999999999927,
+      "p95": 33.40000000000873,
+      "p99": 50.099999999998545
+    },
+    "simulationMs": {
+      "median": 5.300000011920929,
+      "p95": 16,
+      "p99": 20.5
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.699999988079071,
+      "p99": 1.100000023841858
+    },
+    "renderCpuMs": {
+      "median": 21,
+      "p95": 23,
+      "p99": 27.600000023841858
+    },
+    "calls": {
+      "median": 171,
+      "p95": 175,
+      "p99": 179
+    },
+    "systemMs": {
+      "world": {
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "p99": 0.19999998807907104
+      },
+      "creatures": {
+        "median": 5.199999988079071,
+        "p95": 15.899999976158142,
+        "p99": 20.399999976158142
+      },
+      "settlements": {
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "p99": 1
+      },
+      "civilization": {
+        "median": 0,
+        "p95": 0,
+        "p99": 2.600000023841858
+      },
+      "statuses": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0.09999996423721313
+      },
+      "cataclysms": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0
+      },
+      "ships": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0
+      }
+    },
+    "creatureMs": {
+      "navQueue": {
+        "median": 1.100000023841858,
+        "p95": 11.299999952316284,
+        "p99": 12.900000035762787
+      },
+      "navQueueLength": {
+        "median": 3390,
+        "p95": 5046,
+        "p99": 5220
+      },
+      "settlementIndex": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0.10000002384185791
+      },
+      "spatialRebuild": {
+        "median": 0.40000003576278687,
+        "p95": 0.6000000238418579,
+        "p99": 0.699999988079071
+      },
+      "decide": {
+        "median": 0.10000002384185791,
+        "p95": 0.30000001192092896,
+        "p99": 0.40000003576278687
+      },
+      "mainLoop": {
+        "median": 3.800000011920929,
+        "p95": 4.5,
+        "p99": 5.800000011920929
+      },
+      "cleanup": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0
+      },
+      "projectiles": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0
+      }
+    }
+  }
+]

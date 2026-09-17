@@ -1,0 +1,320 @@
+[
+  {
+    "variant": "full",
+    "repetition": 0,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 1188,
+    "elapsed": 60.02040000000037,
+    "droppedSeconds": 0.04999999999999982,
+    "simulatedRealRatio": 0.9991047488297822,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 49.15822,
+      "p95": 51.046129,
+      "p99": 53.023537
+    },
+    "frameMs": {
+      "median": 50,
+      "p95": 66.60000000000582,
+      "p99": 66.80000000000291
+    },
+    "simulationMs": {
+      "median": 0.19999999925494194,
+      "p95": 0.40000000037252903,
+      "p99": 2.699999999254942
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.10000000149011612,
+      "p99": 5
+    },
+    "renderCpuMs": {
+      "median": 1.1000000014901161,
+      "p95": 2.099999999627471,
+      "p99": 2.5
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 83,
+      "p99": 83
+    }
+  },
+  {
+    "variant": "full",
+    "repetition": 1,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 1190,
+    "elapsed": 60.01440000000037,
+    "droppedSeconds": 0,
+    "simulatedRealRatio": 1.000315479840331,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 49.11022,
+      "p95": 50.704213,
+      "p99": 52.619456
+    },
+    "frameMs": {
+      "median": 50,
+      "p95": 50.30000000001746,
+      "p99": 66.60000000000582
+    },
+    "simulationMs": {
+      "median": 0.19999999925494194,
+      "p95": 0.30000000074505806,
+      "p99": 2.099999999627471
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.09999999962747097,
+      "p99": 0.10000000149011612
+    },
+    "renderCpuMs": {
+      "median": 1.099999999627471,
+      "p95": 2.200000001117587,
+      "p99": 2.599999999627471
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 82,
+      "p99": 82
+    }
+  },
+  {
+    "variant": "full",
+    "repetition": 2,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1,
+    "buffer": [
+      1920,
+      1080
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 1190,
+    "elapsed": 60.011799999998885,
+    "droppedSeconds": 0,
+    "simulatedRealRatio": 1.0003588183212475,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 49.027053,
+      "p95": 50.972546,
+      "p99": 52.824288
+    },
+    "frameMs": {
+      "median": 50,
+      "p95": 53.70000000001164,
+      "p99": 66.60000000000582
+    },
+    "simulationMs": {
+      "median": 0.19999999925494194,
+      "p95": 0.30000000074505806,
+      "p99": 2
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.09999999962747097,
+      "p99": 0.10000000149011612
+    },
+    "renderCpuMs": {
+      "median": 1.099999999627471,
+      "p95": 2.099999999627471,
+      "p99": 2.400000000372529
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 82,
+      "p99": 82
+    }
+  },
+  {
+    "variant": "adaptive",
+    "repetition": 0,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 0.6,
+    "buffer": [
+      1152,
+      648
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 1825,
+    "elapsed": 60.019099999999625,
+    "droppedSeconds": 0.450300000000162,
+    "simulatedRealRatio": 0.9924618440913213,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 24.550651,
+      "p95": 62.807248,
+      "p99": 72.669875
+    },
+    "frameMs": {
+      "median": 33.29999999998836,
+      "p95": 66.79999999998836,
+      "p99": 100
+    },
+    "simulationMs": {
+      "median": 0.10000000149011612,
+      "p95": 0.30000000074505806,
+      "p99": 0.5
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.10000000149011612,
+      "p99": 4.400000000372529
+    },
+    "renderCpuMs": {
+      "median": 1.400000000372529,
+      "p95": 3.299999998882413,
+      "p99": 5.400000000372529
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 83,
+      "p99": 83
+    }
+  },
+  {
+    "variant": "adaptive",
+    "repetition": 1,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 0.6,
+    "buffer": [
+      1152,
+      648
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 2186,
+    "elapsed": 60.01290000000037,
+    "droppedSeconds": 0.13330000000004638,
+    "simulatedRealRatio": 0.9975633016687069,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 24.630651,
+      "p95": 35.175609,
+      "p99": 67.134648
+    },
+    "frameMs": {
+      "median": 33.199999999953434,
+      "p95": 49.90000000002328,
+      "p99": 66.70000000001164
+    },
+    "simulationMs": {
+      "median": 0.09999999962747097,
+      "p95": 0.2999999988824129,
+      "p99": 0.40000000037252903
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.09999999962747097,
+      "p99": 0.10000000149011612
+    },
+    "renderCpuMs": {
+      "median": 1.199999999254942,
+      "p95": 2.400000000372529,
+      "p99": 4.5
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 82,
+      "p99": 82
+    }
+  },
+  {
+    "variant": "adaptive",
+    "repetition": 2,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 0.65,
+    "buffer": [
+      1248,
+      702
+    ],
+    "trees": 2535,
+    "creatures": 27,
+    "frames": 2299,
+    "elapsed": 60.017,
+    "droppedSeconds": 0,
+    "simulatedRealRatio": 1.0002721451152359,
+    "gpuTimingAvailable": true,
+    "gpuMs": {
+      "median": 24.974566,
+      "p95": 26.310728,
+      "p99": 28.089804
+    },
+    "frameMs": {
+      "median": 33.20000000001164,
+      "p95": 33.40000000002328,
+      "p99": 33.699999999953434
+    },
+    "simulationMs": {
+      "median": 0.09999999962747097,
+      "p95": 0.2999999988824129,
+      "p99": 1.400000000372529
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.09999999962747097,
+      "p99": 0.10000000149011612
+    },
+    "renderCpuMs": {
+      "median": 1.400000000372529,
+      "p95": 2.599999999627471,
+      "p99": 3.400000000372529
+    },
+    "triangles": {
+      "median": 1818913,
+      "p95": 1818913,
+      "p99": 1818913
+    },
+    "calls": {
+      "median": 82,
+      "p95": 82,
+      "p99": 82
+    }
+  }
+]

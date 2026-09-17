@@ -1,0 +1,173 @@
+[
+  {
+    "scenario": "mature-flat-disasters",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 500,
+    "worldSize": 132,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 432,
+    "cities": 4,
+    "houses": 44,
+    "buildings": 26,
+    "heapBytes": 80945777,
+    "longTasks": {
+      "count": 3,
+      "totalMs": 276,
+      "maxMs": 109
+    },
+    "simulatedRealRatio": 0.9998850132234275,
+    "droppedSeconds": 0,
+    "elapsed": 120.01379999999982,
+    "frames": 7189,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 17
+    },
+    "simulationMs": {
+      "median": 1.7000000001862645,
+      "p95": 9.899999999441206,
+      "p99": 14.799999999813735
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.2999999998137355,
+      "p99": 0.599999999627471
+    },
+    "renderCpuMs": {
+      "median": 5,
+      "p95": 5.7000000001862645,
+      "p99": 7.1000000005587935
+    },
+    "calls": {
+      "median": 166,
+      "p95": 174,
+      "p99": 174
+    },
+    "disasterCount": 8,
+    "housesRemaining": 44
+  },
+  {
+    "scenario": "mature-flat-disasters",
+    "repetition": 1,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 500,
+    "worldSize": 132,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 438,
+    "cities": 4,
+    "houses": 44,
+    "buildings": 26,
+    "heapBytes": 70871329,
+    "longTasks": {
+      "count": 3,
+      "totalMs": 274,
+      "maxMs": 101
+    },
+    "simulatedRealRatio": 0.999926672043997,
+    "droppedSeconds": 0,
+    "elapsed": 120.00879999999981,
+    "frames": 7186,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 17
+    },
+    "simulationMs": {
+      "median": 1.699999999254942,
+      "p95": 11.399999999441206,
+      "p99": 13.299999999813735
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.2999999998137355,
+      "p99": 0.6999999992549419
+    },
+    "renderCpuMs": {
+      "median": 5.5,
+      "p95": 6.199999999254942,
+      "p99": 7.599999999627471
+    },
+    "calls": {
+      "median": 170,
+      "p95": 174,
+      "p99": 174
+    },
+    "disasterCount": 8,
+    "housesRemaining": 44
+  },
+  {
+    "scenario": "mature-flat-disasters",
+    "repetition": 2,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 500,
+    "worldSize": 132,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 447,
+    "cities": 4,
+    "houses": 44,
+    "buildings": 26,
+    "heapBytes": 69104277,
+    "longTasks": {
+      "count": 3,
+      "totalMs": 291,
+      "maxMs": 108
+    },
+    "simulatedRealRatio": 1.0001485919179336,
+    "droppedSeconds": 0,
+    "elapsed": 120.0155,
+    "frames": 7189,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 17
+    },
+    "simulationMs": {
+      "median": 1.7999999998137355,
+      "p95": 9.5,
+      "p99": 13.299999999813735
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.30000000074505806,
+      "p99": 0.7000000001862645
+    },
+    "renderCpuMs": {
+      "median": 5.900000000372529,
+      "p95": 6.7999999998137355,
+      "p99": 9.099999999627471
+    },
+    "calls": {
+      "median": 166,
+      "p95": 174,
+      "p99": 174
+    },
+    "disasterCount": 8,
+    "housesRemaining": 44
+  }
+]

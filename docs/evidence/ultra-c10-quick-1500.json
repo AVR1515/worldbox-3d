@@ -1,0 +1,57 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 20000,
+    "duration": 60000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 149293617,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 0.9998017059949466,
+    "droppedSeconds": 0,
+    "elapsed": 60.011900000000026,
+    "frames": 3170,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 33.30000000000291,
+      "p99": 33.40000000000873
+    },
+    "simulationMs": {
+      "median": 4.800000000046566,
+      "p95": 16.099999999976717,
+      "p99": 21.099999999976717
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.8000000000465661,
+      "p99": 1.2999999999301508
+    },
+    "renderCpuMs": {
+      "median": 12.5,
+      "p95": 17.29999999993015,
+      "p99": 22.099999999976717
+    },
+    "calls": {
+      "median": 163,
+      "p95": 171,
+      "p99": 171
+    }
+  }
+]

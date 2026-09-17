@@ -1,0 +1,26 @@
+{
+  "name": "worldbox-3d",
+  "version": "0.8.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 8080",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 8080",
+    "test": "vitest run && playwright test",
+    "test:unit": "vitest run",
+    "test:soak": "vitest run tests/unit/phase6-7.test.js -t \"ocho horas\"",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "three": "0.160.0",
+    "three-mesh-bvh": "^0.9.14"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}

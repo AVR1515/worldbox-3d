@@ -1,0 +1,188 @@
+[
+  {
+    "scenario": "mature-flat-war",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1477,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 173917201,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 1.0000577650694085,
+    "droppedSeconds": 0,
+    "elapsed": 120.02639999999991,
+    "frames": 7174,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 17.10000000000582
+    },
+    "simulationMs": {
+      "median": 4.100000000093132,
+      "p95": 14.100000000093132,
+      "p99": 15.300000000279397
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.6000000000931323,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 11.200000000186265,
+      "p95": 12.199999999720603,
+      "p99": 14.599999999627471
+    },
+    "calls": {
+      "median": 131,
+      "p95": 133,
+      "p99": 135
+    },
+    "casualties": 23,
+    "cityOwners": [
+      1,
+      2,
+      1,
+      2
+    ]
+  },
+  {
+    "scenario": "mature-flat-war",
+    "repetition": 1,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1477,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 135680945,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 1.0000627642834037,
+    "droppedSeconds": 0,
+    "elapsed": 120.02579999999982,
+    "frames": 6643,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 33.30000000000291,
+      "p99": 33.400000000001455
+    },
+    "simulationMs": {
+      "median": 4.399999999906868,
+      "p95": 14.200000000186265,
+      "p99": 15.399999999906868
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.7000000001862645,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 13.399999999906868,
+      "p95": 14.300000000279397,
+      "p99": 17
+    },
+    "calls": {
+      "median": 131,
+      "p95": 133,
+      "p99": 135
+    },
+    "casualties": 23,
+    "cityOwners": [
+      1,
+      2,
+      1,
+      2
+    ]
+  },
+  {
+    "scenario": "mature-flat-war",
+    "repetition": 2,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 30000,
+    "duration": 120000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1467,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 129958297,
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    },
+    "simulatedRealRatio": 0.999900843166332,
+    "droppedSeconds": 0,
+    "elapsed": 120.01189999999991,
+    "frames": 7145,
+    "frameMs": {
+      "median": 16.69999999999709,
+      "p95": 17,
+      "p99": 19
+    },
+    "simulationMs": {
+      "median": 4.399999999906868,
+      "p95": 14.300000000279397,
+      "p99": 16.5
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.6999999997206032,
+      "p99": 1.1000000000931323
+    },
+    "renderCpuMs": {
+      "median": 10.899999999906868,
+      "p95": 12,
+      "p99": 14.5
+    },
+    "calls": {
+      "median": 131,
+      "p95": 133,
+      "p99": 135
+    },
+    "casualties": 33,
+    "cityOwners": [
+      1,
+      2,
+      1,
+      2
+    ]
+  }
+]

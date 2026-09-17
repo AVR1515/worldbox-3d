@@ -1,0 +1,94 @@
+[
+  {
+    "scenario": "mature-flat-peace",
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "shadows": true,
+    "bloom": true,
+    "antialias": true,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 20000,
+    "duration": 60000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "cities": 4,
+    "houses": 56,
+    "buildings": 24,
+    "heapBytes": 191552188,
+    "longTasks": {
+      "count": 119,
+      "totalMs": 7088,
+      "maxMs": 93
+    },
+    "simulatedRealRatio": 0.9997417333855118,
+    "droppedSeconds": 0,
+    "elapsed": 60.0155,
+    "frames": 1699,
+    "frameMs": {
+      "median": 33.30000000000291,
+      "p95": 50.099999999998545,
+      "p99": 66.80000000000291
+    },
+    "simulationMs": {
+      "median": 9.799999952316284,
+      "p95": 28.600000023841858,
+      "p99": 45.30000001192093
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.699999988079071,
+      "p99": 1
+    },
+    "renderCpuMs": {
+      "median": 21.899999976158142,
+      "p95": 26.399999976158142,
+      "p99": 31.899999976158142
+    },
+    "calls": {
+      "median": 171,
+      "p95": 179,
+      "p99": 179
+    },
+    "systemMs": {
+      "world": {
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "p99": 0.19999998807907104
+      },
+      "creatures": {
+        "median": 9.5,
+        "p95": 28.400000035762787,
+        "p99": 44.700000047683716
+      },
+      "settlements": {
+        "median": 0,
+        "p95": 0.10000002384185791,
+        "p99": 1.100000023841858
+      },
+      "civilization": {
+        "median": 0,
+        "p95": 0,
+        "p99": 2.899999976158142
+      },
+      "statuses": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0.09999996423721313
+      },
+      "cataclysms": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0.09999996423721313
+      },
+      "ships": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0.09999996423721313
+      }
+    }
+  }
+]

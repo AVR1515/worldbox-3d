@@ -1,0 +1,32 @@
+import { test, expect } from '@playwright/test';
+
+test('diagnóstico de GPU y resolución manual persisten y reflejan el render real', async ({ page }, testInfo) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await page.locator('#btnOptionsMenu').click();
+  await page.locator('#dynamicResolutionSetting').selectOption('off');
+  await page.locator('#resolutionSetting').selectOption('0.75');
+  await page.reload();
+  await page.locator('#btnOptionsMenu').click();
+  await expect(page.locator('#dynamicResolutionSetting')).toHaveValue('off');
+  await expect(page.locator('#resolutionSetting')).toHaveValue('0.75');
+  await page.locator('#closeSettingsBtn').click();
+  await page.locator('#btnPlay').click();
+  await page.locator('#sizeGrid [data-value="132"]').click();
+  await page.locator('#btnGenerate').click();
+  await expect(page.locator('#mapCreator')).toBeHidden();
+  if (await page.locator('#tutorialOverlay:not(.hidden)').count()) await page.locator('#skipTutorial').click();
+  await page.keyboard.press('F3');
+  await expect(page.locator('#diagnosticsPanel')).toBeVisible();
+  await expect(page.locator('#diagnosticsSummary')).toContainText('Procesador gráfico');
+  await expect.poll(() => page.evaluate(() => window.__WB3D_DIAGNOSTICS__.snapshot().counts.mediumTrees + window.__WB3D_DIAGNOSTICS__.snapshot().counts.farTrees)).toBeGreaterThan(0);
+  const state = await page.evaluate(() => window.__WB3D_DIAGNOSTICS__.snapshot());
+  expect(state.performance.gpu.length).toBeGreaterThan(0);
+  expect(state.performance.buffer).toBe('1080 × 675');
+  expect(state.performance.simulationMs).toBeGreaterThanOrEqual(0);
+  expect(state.counts.fullTrees + state.counts.mediumTrees + state.counts.farTrees).toBe(state.counts.trees);
+  await page.screenshot({ path: testInfo.outputPath('diagnostics-performance.png') });
+  await page.keyboard.press('F3'); await expect(page.locator('#diagnosticsPanel')).toBeHidden();
+  expect(errors).toEqual([]);
+});

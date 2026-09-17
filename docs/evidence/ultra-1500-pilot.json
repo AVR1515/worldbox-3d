@@ -1,0 +1,86 @@
+[
+  {
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 1,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 5000,
+    "duration": 20000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "simulatedRealRatio": 1.000301255452393,
+    "droppedSeconds": 0,
+    "elapsed": 20.02730000001192,
+    "frames": 557,
+    "frameMs": {
+      "median": 33.30000000000291,
+      "p95": 50.099999999998545,
+      "p99": 66.69999999999982
+    },
+    "simulationMs": {
+      "median": 2.300000011920929,
+      "p95": 5,
+      "p99": 7.5
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.5,
+      "p99": 6.199999988079071
+    },
+    "renderCpuMs": {
+      "median": 30.900000005960464,
+      "p95": 42.20000001788139,
+      "p99": 60.599999994039536
+    },
+    "calls": {
+      "median": 55,
+      "p95": 56,
+      "p99": 59
+    }
+  },
+  {
+    "repetition": 0,
+    "ambientOcclusion": true,
+    "ambientOcclusionResolution": 0.5,
+    "population": 1500,
+    "worldSize": 240,
+    "warmup": 5000,
+    "duration": 20000,
+    "gpu": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 Ti (0x00001F95) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+    "pixelRatio": 1.25,
+    "creatures": 1500,
+    "simulatedRealRatio": 1.0004461223970635,
+    "droppedSeconds": 0,
+    "elapsed": 20.02440000000596,
+    "frames": 642,
+    "frameMs": {
+      "median": 33.29999999999927,
+      "p95": 33.400000000001455,
+      "p99": 50
+    },
+    "simulationMs": {
+      "median": 2.2000000178813934,
+      "p95": 4,
+      "p99": 4.9000000059604645
+    },
+    "visualMs": {
+      "median": 0,
+      "p95": 0.5,
+      "p99": 6.800000011920929
+    },
+    "renderCpuMs": {
+      "median": 27.899999976158142,
+      "p95": 31.400000005960464,
+      "p99": 41
+    },
+    "calls": {
+      "median": 55,
+      "p95": 59,
+      "p99": 59
+    }
+  }
+]
