@@ -1,7 +1,19 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: #05070d; color: #eef1f6; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; user-select: none; }
+/* 100dvh (not 100%/100vh) so the page always matches the space actually visible once a mobile
+   browser's own address/toolbar chrome has collapsed, instead of leaving a gap sized for the
+   chrome-present viewport. */
+html, body { width: 100%; height: 100dvh; overflow: hidden; background: #05070d; color: #eef1f6; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; user-select: none; }
 #scene { position: fixed; inset: 0; display: block; touch-action: none; cursor: crosshair; }
 .hidden { display: none !important; }
+/* Safe-area insets (notch, Dynamic Island, home indicator) — 0 on devices without them. Combined
+   with viewport-fit=cover in index.html, the canvas itself still draws edge-to-edge; only the
+   fixed UI chrome (top HUD, bottom toolbar, etc.) pads away from the actual unsafe edges. */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
 
 :root {
   --panel-bg: rgba(14, 18, 30, 0.82);
@@ -20,7 +32,7 @@ button { font-family: inherit; cursor: pointer; }
 #hud-top {
   position: fixed; top: 0; left: 0; right: 0;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 18px;
+  padding: calc(10px + var(--safe-top)) calc(18px + var(--safe-right)) 10px calc(18px + var(--safe-left));
   background: linear-gradient(to bottom, rgba(6,8,16,0.85), transparent);
   z-index: 20; pointer-events: none;
 }
@@ -256,7 +268,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px s
 
 /* ---------- Speed bar ---------- */
 #speedBar {
-  position: fixed; top: 56px; left: 50%; transform: translateX(-50%);
+  position: fixed; top: calc(56px + var(--safe-top)); left: 50%; transform: translateX(-50%);
   display: flex; gap: 4px; z-index: 20;
   background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 4px;
   backdrop-filter: blur(6px);
@@ -279,7 +291,8 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px s
 #hud-bottom {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 12px 12px 16px; pointer-events: none;
+  padding: 12px calc(12px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(12px + var(--safe-left));
+  pointer-events: none;
   background: linear-gradient(to top, rgba(6,8,16,0.9), transparent);
 }
 #powerCategories {
@@ -625,3 +638,62 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
 #gameMenuBtn:hover { background:#30434f; border-color:var(--accent); }
 @media(max-width:1100px) { #topLeft #brand { display:none; } }
 @media(max-width:700px) { #hud-top { justify-content:space-between; } #topLeft { gap:0; } #gameMenuBtn { min-width:80px; height:36px; } }
+
+/* ==========================================================================
+   Phone UI — only phones/small touch devices get this layout; tablets and
+   desktop (even resized narrow) keep the existing HUD from the rules above.
+   Rebuilt to stop the bottom stack (brush size + category + subcategory +
+   toolbar), the minimap and the on-screen d-pad from overlapping each other,
+   which is what happened when every one of those pieces kept its desktop
+   size and position on a short phone screen.
+   ========================================================================== */
+@media (max-width: 640px) and (pointer: coarse) {
+  /* Minimap moves up next to the speed bar instead of sitting over the
+     bottom toolbar stack — there's no free vertical room for both down there. */
+  #minimapWrap {
+    top: calc(92px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
+    padding: 3px; opacity: 0.92;
+  }
+  #minimapWrap canvas { width: 78px; height: 78px; }
+  #minimapWrap span { font-size: 7px; letter-spacing: 1px; }
+
+  /* The d-pad moves to mid-left, clear of the bottom stack entirely, since that
+     stack now needs every bit of width/height it can get. */
+  #touchControls {
+    left: calc(10px + var(--safe-left)); bottom: auto; top: 50%; transform: translateY(-50%);
+    width: 118px; height: 84px; grid-template: repeat(2, 38px) / repeat(3, 38px);
+    opacity: 0.82;
+  }
+
+  #hud-bottom { gap: 5px; padding: 6px calc(8px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(8px + var(--safe-left)); }
+
+  /* Brush size: icon-only label, narrower slider — it was the widest of the four
+     stacked rows for the least essential control. */
+  #brushRow { padding: 3px 8px; gap: 5px; }
+  #brushRow label { font-size: 0; }
+  #brushRow label::before { content: '🖌️'; font-size: 13px; }
+  #brushRow input[type="range"] { width: 74px; }
+
+  /* Category/subcategory pills and the toolbar all become single-row horizontal
+     scrollers instead of wrapping — that's what was pushing total stack height
+     past the screen and forcing everything to overlap. */
+  #powerCategories, #powerSubcategories, #toolbar {
+    max-width: 100%; width: 100%;
+    flex-wrap: nowrap; justify-content: flex-start;
+    overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; max-height: none;
+  }
+  #powerCategories::-webkit-scrollbar, #powerSubcategories::-webkit-scrollbar, #toolbar::-webkit-scrollbar { display: none; }
+  #powerCategories { justify-content: center; }
+  #powerSubcategories { justify-content: center; }
+  .categoryBtn { flex: 0 0 auto; padding: 5px 9px; font-size: 10.5px; }
+  .subcategoryBtn { flex: 0 0 auto; padding: 5px 9px; font-size: 10px; white-space: nowrap; }
+
+  /* Icons only in the toolbar — the label under each icon was the single biggest
+     use of vertical space in the whole stack, and every tool already has a
+     `title` tooltip carrying the same text. */
+  .toolBtn { flex: 0 0 auto; width: 46px; height: 46px; font-size: 18px; }
+  .toolBtn .lbl { display: none; }
+
+  #speedBar { top: calc(54px + var(--safe-top)); }
+}
