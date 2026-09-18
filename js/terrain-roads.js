@@ -2,6 +2,49 @@ import * as THREE from 'three';
 import { planRiverBridges, bridgeHeightAt } from './river-bridges.js';
 
 export const ROAD_LIFT = 0.018;
+// Slopes steeper than this (rise/run) get stair treads instead of a smooth ramp — steep enough
+// that a plain sloped ribbon reads as an ugly ski-jump cut into the hillside.
+const STAIR_SLOPE = 0.55;
+const STAIR_RISE = 0.16;
+
+// Pushes a quad as two triangles, flipping its winding if needed so the face normal points
+// toward `desiredNormal` — avoids reasoning about CCW/CW by hand for both flat treads (facing
+// up) and vertical risers (facing back down the slope).
+function pushQuad(positions, uvs, corners, desiredNormal, uv) {
+  let [c0, c1, c2, c3] = corners;
+  const e1 = [c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2]];
+  const e2 = [c2[0] - c0[0], c2[1] - c0[1], c2[2] - c0[2]];
+  const nx = e1[1] * e2[2] - e1[2] * e2[1], ny = e1[2] * e2[0] - e1[0] * e2[2], nz = e1[0] * e2[1] - e1[1] * e2[0];
+  if (nx * desiredNormal[0] + ny * desiredNormal[1] + nz * desiredNormal[2] < 0) [c1, c3] = [c3, c1];
+  for (const tri of [[c0, c1, c2], [c0, c2, c3]]) for (const c of tri) { positions.push(...c); uvs.push(uv[0], uv[1]); }
+}
+
+// Adds a staircase (flat treads + vertical risers) climbing from a to b, inset within the road's
+// footprint, straight into the same positions/uvs buffers the ramp geometry already writes to —
+// so it merges into one draw call with no extra mesh or material needed.
+function addStairs(positions, uvs, world, a, b, oa, ob, dx, dz, length) {
+  const ha = world.heightAtWorld(a[0], a[1]) + ROAD_LIFT, hb = world.heightAtWorld(b[0], b[1]) + ROAD_LIFT;
+  const rise = Math.abs(hb - ha);
+  if (length < 0.35 || rise / length < STAIR_SLOPE) return false;
+  const steps = Math.max(2, Math.round(rise / STAIR_RISE));
+  const inset = 0.82;
+  let prevY = ha;
+  for (let i = 0; i < steps; i++) {
+    const t0 = i / steps, t1 = (i + 1) / steps;
+    const x0 = a[0] + dx * t0, z0 = a[1] + dz * t0, x1 = a[0] + dx * t1, z1 = a[1] + dz * t1;
+    const ox0 = (oa[0] + (ob[0] - oa[0]) * t0) * inset, oz0 = (oa[1] + (ob[1] - oa[1]) * t0) * inset;
+    const ox1 = (oa[0] + (ob[0] - oa[0]) * t1) * inset, oz1 = (oa[1] + (ob[1] - oa[1]) * t1) * inset;
+    const y = ha + (hb - ha) * t1;
+    pushQuad(positions, uvs, [
+      [x0 - ox0, y, z0 - oz0], [x0 + ox0, y, z0 + oz0], [x1 + ox1, y, z1 + oz1], [x1 - ox1, y, z1 - oz1],
+    ], [0, 1, 0], [0.5, t1]);
+    pushQuad(positions, uvs, [
+      [x0 - ox0, prevY, z0 - oz0], [x0 + ox0, prevY, z0 + oz0], [x0 + ox0, y, z0 + oz0], [x0 - ox0, y, z0 - oz0],
+    ], [-dx, 0, -dz], [0.5, t0]);
+    prevY = y;
+  }
+  return true;
+}
 
 // Clip a polygon without losing the height interpolated on its terrain triangle.
 function clip(polygon, distance) {
@@ -33,6 +76,10 @@ export function buildTerrainRoad(world, nodes, width = 0.65, elevation = null, b
     const a = nodes[k - 1], b = nodes[k], oa = offsets[k - 1], ob = offsets[k];
     const dx = b[0] - a[0], dz = b[1] - a[1], length = Math.hypot(dx, dz);
     if (length < 1e-6) continue;
+    // Bridges already get their own gentle deck; only stair natural terrain that isn't dry-riverbed.
+    const stepped = !elevation && bridgeHeightAt(bridges, a[0], a[1], 1.5) == null && bridgeHeightAt(bridges, b[0], b[1], 1.5) == null &&
+      addStairs(positions, uvs, world, a, b, oa, ob, dx, dz, length);
+    if (stepped) { traveled += length; continue; }
     const quad = [[a[0] - oa[0], a[1] - oa[1]], [a[0] + oa[0], a[1] + oa[1]], [b[0] + ob[0], b[1] + ob[1]], [b[0] - ob[0], b[1] - ob[1]]];
     // Use consistently counterclockwise footprints in the X/Z plane.
     const area = quad.reduce((sum, p, i) => sum + p[0] * quad[(i + 1) % 4][1] - p[1] * quad[(i + 1) % 4][0], 0);

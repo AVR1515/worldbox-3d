@@ -262,10 +262,34 @@ const TOWER_SENTRY_GEO = new THREE.BoxGeometry(0.15, 0.32, 0.15);
 const TOWER_SENTRY_MAT = new THREE.MeshStandardMaterial({ color: 0x3a2c1e, roughness: 0.9 });
 const WALL_PLACEHOLDER_GEO = new THREE.BoxGeometry(1.5, 0.95, 0.32).translate(0, 0.475, 0);
 const WALL_PLACEHOLDER_MAT = new THREE.MeshStandardMaterial({ color: WALL_TINT, roughness: 0.95 });
-const MERCHANT_CART_MAT = new THREE.MeshStandardMaterial({ color: 0x8a6a45, roughness: 0.9 });
+// An old-fashioned market/trade cart: wooden bed on two spoked wheels, front draw shafts,
+// and a peaked striped-cloth awning on corner poles.
+const MERCHANT_CART_MAT = new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 0.9 });
+const MERCHANT_RAIL_MAT = new THREE.MeshStandardMaterial({ color: 0x8a6a45, roughness: 0.9 });
+const MERCHANT_WHEEL_MAT = new THREE.MeshStandardMaterial({ color: 0x3a2a1a, roughness: 0.85 });
+const MERCHANT_HUB_MAT = new THREE.MeshStandardMaterial({ color: 0x201510, roughness: 0.8 });
+const MERCHANT_POLE_MAT = new THREE.MeshStandardMaterial({ color: 0x5a3f26, roughness: 0.85 });
 const MERCHANT_CANOPY_MAT = new THREE.MeshStandardMaterial({ color: 0xd9c48f, roughness: 0.9 });
-const MERCHANT_CART_GEO = new THREE.BoxGeometry(0.4, 0.28, 0.55);
-const MERCHANT_CANOPY_GEO = new THREE.BoxGeometry(0.36, 0.06, 0.5);
+const MERCHANT_CANOPY_STRIPE_MAT = new THREE.MeshStandardMaterial({ color: 0xa8402f, roughness: 0.9 });
+const MERCHANT_CRATE_MAT = new THREE.MeshStandardMaterial({ color: 0xb08a52, roughness: 0.9 });
+
+const MERCHANT_CART_GEO = new THREE.BoxGeometry(0.4, 0.16, 0.6);
+const MERCHANT_RAIL_GEO = new THREE.BoxGeometry(0.42, 0.09, 0.62);
+const MERCHANT_WHEEL_GEO = new THREE.CylinderGeometry(0.15, 0.15, 0.05, 10);
+const MERCHANT_HUB_GEO = new THREE.CylinderGeometry(0.045, 0.045, 0.07, 8);
+const MERCHANT_SHAFT_GEO = new THREE.CylinderGeometry(0.018, 0.018, 0.5, 5);
+const MERCHANT_POLE_GEO = new THREE.CylinderGeometry(0.018, 0.018, 0.34, 5);
+// A peaked awning made of two panels sloping down from a central ridge — built by rotating
+// each panel around its inner (ridge) edge rather than its center.
+function buildCanopyPanel(sign) {
+  const g = new THREE.BoxGeometry(0.26, 0.025, 0.58);
+  g.translate(sign * 0.13, 0, 0);
+  g.rotateZ(sign * -0.45);
+  return g;
+}
+const MERCHANT_CANOPY_LEFT_GEO = buildCanopyPanel(1);
+const MERCHANT_CANOPY_RIGHT_GEO = buildCanopyPanel(-1);
+const MERCHANT_CRATE_GEO = new THREE.BoxGeometry(0.14, 0.14, 0.14);
 const TRADE_ROUTE_MAX_DIST = 150;
 
 const LABEL_W = 320, LABEL_H = 112;
@@ -426,9 +450,29 @@ export class SettlementManager {
     this.freeWallGateSlots = [];
     this.nextWallGateSlot = 0;
 
-    const farmGeo = new THREE.PlaneGeometry(1.3, 1.3);
+    // A flat gold square read as a rug, not a field. Give it real tilled furrows (small ridges
+    // running in rows) and alternate soil/crop vertex colors along those rows, all in geometry so
+    // it stays a single cheap InstancedMesh draw call like the plain plane it replaces.
+    const farmGeo = new THREE.PlaneGeometry(1.3, 1.3, 10, 7);
     farmGeo.rotateX(-Math.PI / 2);
-    const farmMat = new THREE.MeshStandardMaterial({ color: 0xc9a227, roughness: 1, side: THREE.DoubleSide });
+    {
+      const pos = farmGeo.attributes.position;
+      const soil = new THREE.Color(0x7a5a2f), crop = new THREE.Color(0xd4b13a), tip = new THREE.Color(0xe8cf6a);
+      const colors = [];
+      const tmp = new THREE.Color();
+      for (let i = 0; i < pos.count; i++) {
+        const z = pos.getZ(i);
+        const row = Math.sin(z * 15.5);
+        pos.setY(i, Math.max(0, row) * 0.018);
+        const stripe = row * 0.5 + 0.5;
+        tmp.copy(soil).lerp(crop, stripe);
+        if (row > 0.75) tmp.lerp(tip, (row - 0.75) * 3);
+        colors.push(tmp.r, tmp.g, tmp.b);
+      }
+      farmGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      farmGeo.computeVertexNormals();
+    }
+    const farmMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, side: THREE.DoubleSide });
     this.farmMesh = new THREE.InstancedMesh(farmGeo, farmMat, FARM_CAP);
     this.farmMesh.receiveShadow = true;
     this.farmMesh.frustumCulled = false;
@@ -1853,11 +1897,31 @@ export class SettlementManager {
 
   _buildMerchantMesh() {
     const g = new THREE.Group();
-    const cart = new THREE.Mesh(MERCHANT_CART_GEO, MERCHANT_CART_MAT);
-    cart.position.y = 0.2; cart.castShadow = true;
-    const canopy = new THREE.Mesh(MERCHANT_CANOPY_GEO, MERCHANT_CANOPY_MAT);
-    canopy.position.y = 0.42; canopy.castShadow = true;
-    g.add(cart, canopy);
+    const add = (geometry, material, x, y, z, rz = 0) => {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(x, y, z);
+      if (rz) mesh.rotation.z = rz;
+      mesh.castShadow = true;
+      g.add(mesh);
+      return mesh;
+    };
+    // Bed + side rails.
+    add(MERCHANT_CART_GEO, MERCHANT_CART_MAT, 0, 0.23, 0);
+    add(MERCHANT_RAIL_GEO, MERCHANT_RAIL_MAT, 0, 0.32, 0);
+    // Two large spoked wheels, one each side.
+    for (const side of [-1, 1]) {
+      add(MERCHANT_WHEEL_GEO, MERCHANT_WHEEL_MAT, side * 0.21, 0.15, 0, Math.PI / 2);
+      add(MERCHANT_HUB_GEO, MERCHANT_HUB_MAT, side * 0.21, 0.15, 0, Math.PI / 2);
+    }
+    // Draw shafts reaching out the front, like a hand- or animal-pulled market cart.
+    for (const side of [-1, 1]) add(MERCHANT_SHAFT_GEO, MERCHANT_POLE_MAT, side * 0.12, 0.2, -0.53, Math.PI / 2 - side * 0.06);
+    // Corner poles holding up a peaked, striped awning.
+    for (const x of [-0.17, 0.17]) for (const z of [-0.24, 0.24]) add(MERCHANT_POLE_GEO, MERCHANT_POLE_MAT, x, 0.48, z);
+    add(MERCHANT_CANOPY_LEFT_GEO, MERCHANT_CANOPY_MAT, 0, 0.63, 0);
+    add(MERCHANT_CANOPY_RIGHT_GEO, MERCHANT_CANOPY_STRIPE_MAT, 0, 0.63, 0);
+    // A couple of goods crates riding in the bed.
+    add(MERCHANT_CRATE_GEO, MERCHANT_CRATE_MAT, -0.08, 0.35, 0.1);
+    add(MERCHANT_CRATE_GEO, MERCHANT_CRATE_MAT, 0.09, 0.35, -0.08);
     return g;
   }
 
@@ -1883,7 +1947,7 @@ export class SettlementManager {
     if (!route) return;
     const nodes = route.capA === capA.id ? route.nodes : [...route.nodes].reverse();
     const mesh = this._buildMerchantMesh();
-    mesh.position.set(nodes[0][0], this.world.heightAtWorld(...nodes[0]) + 0.18, nodes[0][1]);
+    mesh.position.set(nodes[0][0], this.world.heightAtWorld(...nodes[0]) + 0.02, nodes[0][1]);
     this.group.add(mesh);
     this.merchants.push({
       mesh, nodes, empireAId: a.id, empireBId: b.id, t: 0, duration: Math.max(8, nodesLength(nodes) / 4),
@@ -1896,7 +1960,7 @@ export class SettlementManager {
       m.t += dt;
       const p = Math.min(1, m.t / m.duration);
       const { x, z, heading } = sampleNodes(m.nodes, p);
-      m.mesh.position.set(x, (this.world.bridgeHeightAtWorld?.(x, z) ?? this.world.heightAtWorld(x, z)) + 0.18, z);
+      m.mesh.position.set(x, (this.world.bridgeHeightAtWorld?.(x, z) ?? this.world.heightAtWorld(x, z)) + 0.02, z);
       m.mesh.rotation.y = heading;
       if (p >= 1) {
         const bonus = 6 + Math.random() * 6;

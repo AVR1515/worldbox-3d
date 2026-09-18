@@ -581,22 +581,19 @@ function selectPowerCategory(categoryId) {
   currentCategory = category.id;
   const subnav = document.getElementById('powerSubcategories');
   subnav.replaceChildren();
-  for (const [label, tools] of [['Todos', category.tools], ...(toolSections[category.id] || [])]) {
+  const sections = toolSections[category.id] || [[category.label, category.tools]];
+  sections.forEach(([label, tools], index) => {
     const button = document.createElement('button');
     button.textContent = label; button.className = 'subcategoryBtn';
-    button.classList.toggle('active', label === 'Todos');
+    button.classList.toggle('active', index === 0);
     button.addEventListener('click', () => {
       subnav.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === button));
       showToolSubset(tools);
     });
     subnav.append(button);
-  }
+  });
   document.querySelectorAll('.categoryBtn').forEach(b => b.classList.toggle('active', b.dataset.category === currentCategory));
-  document.querySelectorAll('.toolBtn').forEach(b => b.classList.toggle('is-hidden', !category.tools.includes(b.dataset.tool)));
-  if (!category.tools.includes(currentTool)) {
-    currentTool = category.tools[0];
-    document.querySelectorAll('.toolBtn').forEach(b => b.classList.toggle('active', b.dataset.tool === currentTool));
-  }
+  showToolSubset(sections[0][1]);
 }
 
 for (const category of POWER_CATEGORIES) {

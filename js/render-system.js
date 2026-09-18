@@ -48,6 +48,45 @@ const SKY_FRAGMENT_SHADER = `
 `;
 const ZENITH_TINT = new THREE.Color(0x03040f);
 
+// Same radial-gradient canvas technique as buildGlowTexture, but with a few darker blobs
+// painted on top so the moon reads as a sphere with craters instead of a flat glow dot.
+function buildMoonTexture(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const base = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  base.addColorStop(0, 'rgba(238,242,255,1)');
+  base.addColorStop(0.78, 'rgba(206,216,242,1)');
+  base.addColorStop(1, 'rgba(206,216,242,0)');
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = 'rgba(150,162,196,0.4)';
+  for (const [cx, cy, cr] of [[0.4, 0.35, 0.1], [0.63, 0.56, 0.075], [0.3, 0.62, 0.065], [0.56, 0.28, 0.05]]) {
+    ctx.beginPath(); ctx.arc(cx * size, cy * size, cr * size, 0, Math.PI * 2); ctx.fill();
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+// A handful of overlapping soft blobs read as one fluffy cloud puff instead of a single
+// perfectly round dot.
+function buildCloudTexture(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  for (const [bx, by, br] of [[0.5, 0.56, 0.42], [0.3, 0.52, 0.3], [0.7, 0.5, 0.32], [0.42, 0.36, 0.26], [0.6, 0.62, 0.28]]) {
+    const gradient = ctx.createRadialGradient(bx * size, by * size, 0, bx * size, by * size, br * size);
+    gradient.addColorStop(0, 'rgba(255,255,255,0.95)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.beginPath(); ctx.arc(bx * size, by * size, br * size, 0, Math.PI * 2); ctx.fill();
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 export class RenderSystem {
   constructor(canvas, { shadowSpan = 150 } = {}) {
     // SMAA owns antialiasing. Context MSAA otherwise stays enabled even when the
@@ -163,8 +202,39 @@ export class RenderSystem {
     this.stars.renderOrder = -1;
     this.scene.add(this.stars);
 
+    const moonTexture = buildMoonTexture(128);
+    this.moonSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: moonTexture, color: 0xffffff, transparent: true, depthWrite: false,
+      blending: THREE.NormalBlending, fog: false, opacity: 0,
+    }));
+    this.moonSprite.scale.setScalar(17);
+    this.moonSprite.renderOrder = -1;
+    this.scene.add(this.moonSprite);
+
+    // Cloud puffs on a group so a single slow Y rotation drifts all of them across the sky
+    // without any per-sprite position bookkeeping.
+    const cloudTexture = buildCloudTexture(128);
+    this.clouds = new THREE.Group();
+    for (let i = 0; i < 26; i++) {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: cloudTexture, color: 0xffffff, transparent: true, depthWrite: false, fog: false, opacity: 0.55,
+      }));
+      const theta = Math.random() * Math.PI * 2;
+      const r = 250 + Math.random() * 100;
+      const y = 55 + Math.random() * 75;
+      sprite.position.set(Math.cos(theta) * r, y, Math.sin(theta) * r);
+      const scale = 36 + Math.random() * 46;
+      sprite.scale.set(scale * (1.1 + Math.random() * 0.5), scale * 0.55, 1);
+      sprite.renderOrder = -1;
+      this.clouds.add(sprite);
+    }
+    this.scene.add(this.clouds);
+
     this._zenithTmp = new THREE.Color();
     this._sunDirTmp = new THREE.Vector3();
+    this._moonDirTmp = new THREE.Vector3();
+    this._cloudColorTmp = new THREE.Color();
+    this._cloudNightTmp = new THREE.Color(0x8fa3c9);
   }
 
   // Called once per frame from main.js's day/night cycle with the horizon color and sun color
@@ -183,6 +253,15 @@ export class RenderSystem {
     this.sunSprite.material.opacity = heightFade * 0.85;
     this.sunSprite.visible = heightFade > 0.002;
     this.stars.material.opacity = (1 - heightFade) * 0.85;
+
+    const moonDir = this._moonDirTmp.set(Math.cos(angle + Math.PI), Math.sin(angle + Math.PI), 0.32).normalize();
+    this.moonSprite.position.copy(this.camera.position).addScaledVector(moonDir, 380);
+    const moonHeightFade = Math.max(0, Math.min(1, (moonDir.y + 0.06) / 0.26));
+    this.moonSprite.material.opacity = moonHeightFade * 0.9;
+    this.moonSprite.visible = moonHeightFade > 0.002;
+
+    this._cloudColorTmp.set(0xffffff).lerp(this._cloudNightTmp, 1 - heightFade);
+    for (const sprite of this.clouds.children) sprite.material.color.copy(this._cloudColorTmp);
   }
 
   _buildComposer() {
@@ -260,6 +339,13 @@ export class RenderSystem {
     this.renderer.shadowMap.needsUpdate = this.renderer.shadowMap.enabled;
     this.sky.position.copy(this.camera.position);
     this.stars.position.copy(this.camera.position);
+    if (this.clouds) {
+      this.clouds.position.copy(this.camera.position);
+      const now = performance.now();
+      const cloudDt = this._lastCloudTime ? Math.min(0.1, (now - this._lastCloudTime) / 1000) : 0;
+      this._lastCloudTime = now;
+      this.clouds.rotation.y += cloudDt * 0.006;
+    }
     // Color and SSAO render the same frame. Propagate transforms once, instead of
     // traversing every character and building again for each composer pass.
     const autoUpdate = this.scene.matrixWorldAutoUpdate;
