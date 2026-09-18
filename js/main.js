@@ -548,9 +548,10 @@ let diploFirst = null;
 let possessing = null;
 let following = null;
 let humanViewOn = false; // true only when the current possession came from the "Vista humana" button
-// The inspect/"hand" tool has nothing to paint, so its single touch finger pans instead
-// (js/camera.js) rather than being reserved for tool application like every other tool's is.
-rig.isPanTool = () => currentTool === 'inspect';
+// The inspect/"hand" tool has nothing to paint, so its single touch finger orbits the camera
+// instead (js/camera.js, mirroring right-click-drag) rather than being reserved for tool
+// application like every other tool's is. Panning stays on the on-screen d-pad.
+rig.isRotateTool = () => currentTool === 'inspect';
 
 const toolbar = document.getElementById('toolbar');
 const powerCategories = document.getElementById('powerCategories');
@@ -572,7 +573,20 @@ toolTrayFab.addEventListener('click', () => {
   const open = document.body.classList.toggle('toolTrayOpen');
   toolTrayFab.setAttribute('aria-expanded', String(open));
 });
-document.getElementById('toolTrayBackdrop').addEventListener('click', closeToolTray);
+// Phone-only top dropdown: merges the population-stats row and the action-icon row (aerial
+// view, human view, fullscreen, layers, empires, history, laws) behind one button instead of
+// two permanently-visible rows crowding the top of the map (see index.html's #topExtras).
+const topMoreBtn = document.getElementById('topMoreBtn');
+function closeTopTray() {
+  document.body.classList.remove('topTrayOpen');
+  topMoreBtn.setAttribute('aria-expanded', 'false');
+}
+topMoreBtn.addEventListener('click', () => {
+  const open = document.body.classList.toggle('topTrayOpen');
+  topMoreBtn.setAttribute('aria-expanded', String(open));
+});
+document.getElementById('topActions').addEventListener('click', e => { if (e.target.closest('button')) closeTopTray(); });
+document.getElementById('toolTrayBackdrop').addEventListener('click', () => { closeToolTray(); closeTopTray(); });
 for (const p of POWERS) {
   const btn = document.createElement('button');
   btn.className = 'toolBtn' + (p.id === currentTool ? ' active' : '');

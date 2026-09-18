@@ -29,9 +29,11 @@ export class CameraRig {
     this._singleTouchLast = null;
     this.multiTouch = false;
     // main.js assigns this to `() => currentTool === 'inspect'`: the hand/inspect tool has
-    // nothing to paint or drag-apply, so its single finger is free to pan instead of being
-    // reserved for tool application like every other (paintable) tool's finger is.
-    this.isPanTool = null;
+    // nothing to paint or drag-apply, so its single finger is free to orbit the camera (the
+    // touch equivalent of right-click-drag) instead of being reserved for tool application like
+    // every other (paintable) tool's finger is. Panning stays on the on-screen d-pad, same as
+    // it already was for every other tool.
+    this.isRotateTool = null;
 
     dom.addEventListener('contextmenu', e => e.preventDefault());
     dom.addEventListener('pointerdown', e => {
@@ -65,10 +67,10 @@ export class CameraRig {
       if (e.pointerType === 'touch') {
         if (!this._touches.has(e.pointerId)) return;
         this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-        if (this._touches.size === 1 && this._singleTouchLast && this.isPanTool?.()) {
+        if (this._touches.size === 1 && this._singleTouchLast && this.isRotateTool?.()) {
           const dx = e.clientX - this._singleTouchLast.x, dy = e.clientY - this._singleTouchLast.y;
           this._singleTouchLast = { x: e.clientX, y: e.clientY };
-          this._pan(dx, dy);
+          if (!this.aerial) this._rotate(dx, dy);
         } else if (this._touches.size === 2 && this._pinch) {
           const [a, b] = [...this._touches.values()];
           const dist = Math.hypot(a.x - b.x, a.y - b.y);
@@ -86,8 +88,7 @@ export class CameraRig {
       const dx = e.clientX - this._lastX, dy = e.clientY - this._lastY;
       this._lastX = e.clientX; this._lastY = e.clientY;
       if (this._dragButton === 2 && !this.aerial) {
-        this.azimuth -= dx * 0.0055;
-        this.polar = Math.min(Math.PI * 0.49, Math.max(0.08, this.polar - dy * 0.0045));
+        this._rotate(dx, dy);
       } else if (this._dragButton === 1 || this.aerial) {
         this._pan(dx, dy);
       }
@@ -99,6 +100,11 @@ export class CameraRig {
 
     window.addEventListener('keydown', e => { this.keys[e.code] = true; });
     window.addEventListener('keyup', e => { this.keys[e.code] = false; });
+  }
+
+  _rotate(dx, dy) {
+    this.azimuth -= dx * 0.0055;
+    this.polar = Math.min(Math.PI * 0.49, Math.max(0.08, this.polar - dy * 0.0045));
   }
 
   _pan(dx, dy) {

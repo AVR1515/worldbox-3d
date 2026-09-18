@@ -131,8 +131,9 @@
       <button id="gameMenuBtn" title="Menú del juego (Esc)" aria-label="Menú del juego">☰ Menú</button>
     <div id="brand">🌍 WorldBox<span>3D</span></div>
     </div>
+    <div id="topExtras">
     <div id="stats">
-      <div class="stat"><span class="ico">☀️</span><span id="dayCounter">Día 1</span></div>
+      <div class="stat" id="dayStat"><span class="ico">☀️</span><span id="dayCounter">Día 1</span></div>
       <div class="stat herb"><span class="ico">🐑</span><span id="popHerb">0</span></div>
       <div class="stat carn"><span class="ico">🐺</span><span id="popCarn">0</span></div>
       <div class="stat" title="Peces"><span class="ico">🐟</span><span id="popFish">0</span></div>
@@ -158,6 +159,10 @@
 
 
     </div>
+    </div>
+    <!-- Phone-only: merges the stats row + action-icons row above behind one toggle button.
+         Invisible on desktop/tablet (style.css). -->
+    <button id="topMoreBtn" aria-label="Más opciones" aria-expanded="false">⋯</button>
   </div>
 
   <div id="hoverInfo"></div>

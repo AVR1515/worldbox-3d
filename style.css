@@ -38,6 +38,10 @@ button { font-family: inherit; cursor: pointer; }
 }
 #brand { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; pointer-events: auto; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
 #brand span { color: var(--accent); }
+/* No box of its own on desktop — #stats/#topActions stay direct flex children of #hud-top,
+   exactly like before this wrapper existed. Only the phone layout gives it real box behavior. */
+#topExtras { display: contents; }
+#topMoreBtn { display: none; }
 
 #stats { display: flex; gap: 8px; pointer-events: auto; }
 .stat {
@@ -662,71 +666,115 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
    ========================================================================== */
 @media (pointer: coarse) and (hover: none) and (max-width: 640px),
        (pointer: coarse) and (hover: none) and (max-height: 500px) {
-  /* Minimap: small corner chip, well clear of both the FAB and the d-pad. */
+  /* Top bar: only the menu button and the day counter stay always visible; the population
+     stats and the seven action icons collapse behind #topMoreBtn (see index.html's #topExtras
+     wrapper) instead of forming a second crowded row above the map. */
+  #hud-top { padding: calc(6px + var(--safe-top)) calc(10px + var(--safe-right)) 6px calc(10px + var(--safe-left)); position: fixed; }
+  #stats .stat { display: none; }
+  #stats #dayStat { display: flex; }
+  #topActions { display: none; }
+  #topMoreBtn {
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 9px; font-size: 17px; font-weight: 700;
+    color: var(--text); background: var(--panel-bg); border: 1px solid var(--panel-border);
+    pointer-events: auto;
+  }
+  body.topTrayOpen #topMoreBtn { background: var(--accent); color: #201400; border-color: var(--accent); }
+  /* Opened: the hidden stats + action icons reappear as a dropdown card right under the bar. */
+  body.topTrayOpen #stats .stat { display: flex; }
+  body.topTrayOpen #topActions { display: flex; }
+  body.topTrayOpen #topExtras {
+    display: flex; flex-direction: column; gap: 8px;
+    position: fixed; top: calc(96px + var(--safe-top)); right: calc(8px + var(--safe-right));
+    z-index: 23; width: min(260px, calc(100vw - 16px)); padding: 10px;
+    max-height: calc(100dvh - 112px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto;
+    background: linear-gradient(165deg, rgba(20,27,40,0.98), rgba(9,13,21,0.99));
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; box-shadow: 0 14px 34px rgba(0,0,0,.5);
+  }
+  body.topTrayOpen #stats { display: flex; flex-wrap: wrap; gap: 5px; }
+  body.topTrayOpen #topActions { flex-wrap: wrap; gap: 5px; }
+  body.topTrayOpen .stat { font-size: 12px; padding: 4px 8px; }
+  body.topTrayOpen #topActions button { width: 34px; height: 34px; font-size: 14px; }
+  /* The dropdown already sits right below it, so hide the minimap while open rather than
+     guess a safe offset for a card whose height depends on how much wraps. */
+  body.topTrayOpen #minimapWrap { display: none; }
+
   #minimapWrap {
-    top: calc(84px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
+    top: calc(46px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
     padding: 3px; opacity: 0.94; background: rgba(10,14,22,0.88);
   }
   #minimapWrap canvas { width: 56px; height: 56px; }
   #minimapWrap span { font-size: 6px; letter-spacing: 0.5px; }
 
-  /* The d-pad sits mid-left, out of the way of both the map center and the FAB.
-     Circular, gradient-shaded buttons read as real game-controller keys instead
-     of resized desktop rectangles. */
+  /* The d-pad: bottom-left (mirroring the FAB's bottom-right), big enough to actually hit with
+     a thumb. Circular, gradient-shaded buttons read as real game-controller keys instead of
+     resized desktop rectangles. */
   #touchControls {
-    left: calc(8px + var(--safe-left)); bottom: auto; top: 50%; transform: translateY(-50%);
-    width: 96px; height: 66px; grid-template: repeat(2, 31px) / repeat(3, 31px); gap: 2px;
+    left: calc(10px + var(--safe-left)); bottom: calc(14px + var(--safe-bottom)); top: auto; transform: none;
+    width: 128px; height: 88px; grid-template: repeat(2, 42px) / repeat(3, 42px); gap: 3px;
     background: transparent;
   }
   #touchControls button {
-    border-radius: 50%; background: linear-gradient(160deg, rgba(58,70,88,.8), rgba(15,20,30,.8));
+    border-radius: 50%; background: linear-gradient(160deg, rgba(58,70,88,.85), rgba(15,20,30,.85));
     border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,0.12);
-    font-size: 12px;
+    font-size: 15px;
   }
   #touchControls button:active { background: linear-gradient(160deg, rgba(242,178,60,.5), rgba(15,20,30,.85)); transform: scale(0.92); }
 
   /* The FAB: always-visible round button showing the current tool's icon, bottom-right,
-     clear of both the d-pad and the minimap. */
+     clear of the d-pad. */
   #toolTrayFab {
     display: flex; align-items: center; justify-content: center;
     position: fixed; z-index: 23;
     right: calc(14px + var(--safe-right)); bottom: calc(14px + var(--safe-bottom));
-    width: 56px; height: 56px; border-radius: 50%;
+    width: 58px; height: 58px; border-radius: 50%;
     background: linear-gradient(160deg, #ffd884, var(--accent) 60%, #c47f12);
     border: 1px solid rgba(255,255,255,0.3);
     box-shadow: 0 8px 20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.35);
-    font-size: 24px;
+    font-size: 25px;
   }
   #toolTrayFab:active { transform: scale(0.93); }
   body.toolTrayOpen #toolTrayFab { box-shadow: 0 0 0 3px rgba(242,178,60,.35), 0 8px 20px rgba(0,0,0,.5); }
 
-  /* An invisible full-screen tap-to-close layer behind the open tray. */
+  /* An invisible full-screen tap-to-close layer behind the open tray/dropdown. */
   #toolTrayBackdrop { display: block; position: fixed; inset: 0; z-index: 19; background: rgba(2,4,9,0); transition: background 0.2s; pointer-events: none; }
-  body.toolTrayOpen #toolTrayBackdrop { background: rgba(2,4,9,0.4); pointer-events: auto; }
+  body.toolTrayOpen #toolTrayBackdrop, body.topTrayOpen #toolTrayBackdrop { background: rgba(2,4,9,0.4); pointer-events: auto; }
 
-  /* The tray itself: off-screen (below the viewport) until opened, as a rounded bottom sheet. */
+  /* The tray: off-screen (below the viewport) until opened, as a single cohesive bottom-sheet
+     card — a drag-handle bar up top, then one flowing list instead of four separately boxed
+     rows (brush size / category / subcategory / toolbar all used to carry their own panel
+     background + border, which read as clutter stacked on clutter at this size). */
   #hud-bottom {
-    z-index: 21; gap: 4px;
-    padding: 10px calc(10px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(10px + var(--safe-left));
-    background: linear-gradient(180deg, rgba(12,17,27,0.98), rgba(8,11,18,0.99));
-    border-top: 1px solid rgba(255,255,255,0.1);
-    border-radius: 18px 18px 0 0;
-    box-shadow: 0 -8px 30px rgba(0,0,0,.5);
-    transform: translateY(105%);
+    z-index: 21; gap: 10px;
+    padding: 10px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+    background: linear-gradient(180deg, rgba(17,23,34,0.99), rgba(8,11,18,0.995));
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 34px rgba(0,0,0,.55);
+    transform: translateY(calc(100% + 24px));
     transition: transform 0.24s cubic-bezier(.2,.8,.3,1);
     pointer-events: none;
   }
   body.toolTrayOpen #hud-bottom { transform: translateY(0); pointer-events: auto; }
+  #hud-bottom::before {
+    content: ''; display: block; width: 36px; height: 4px; border-radius: 3px;
+    background: rgba(255,255,255,0.22); margin: 0 auto 2px;
+  }
 
-  /* Brush size: icon-only label, narrower slider — least essential row, kept small. */
-  #brushRow { padding: 3px 8px; gap: 5px; }
+  /* Every row loses its own separate panel background/border and instead just sits in the
+     sheet's flow, divided by a thin hairline — one card, not four. */
+  #brushRow, #powerCategories, #powerSubcategories, #toolbar {
+    background: transparent; border: none; box-shadow: none; border-radius: 0;
+    padding-left: 2px; padding-right: 2px;
+  }
+  #brushRow { padding-top: 0; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 8px; }
   #brushRow label { font-size: 0; }
-  #brushRow label::before { content: '🖌️'; font-size: 12px; }
-  #brushRow input[type="range"] { width: 90px; }
-  #brushSizeVal { font-size: 11px; }
+  #brushRow label::before { content: '🖌️'; font-size: 14px; }
+  #brushRow input[type="range"] { flex: 1; }
+  #brushSizeVal { font-size: 12px; }
 
   /* Category/subcategory pills and the toolbar are single-row horizontal scrollers instead
-     of wrapping, so the open tray itself stays short. */
+     of wrapping, so the open tray stays short. */
   #powerCategories, #powerSubcategories, #toolbar {
     max-width: 100%; width: 100%;
     flex-wrap: nowrap; justify-content: flex-start;
@@ -734,26 +782,23 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
     scrollbar-width: none; max-height: none;
   }
   #powerCategories::-webkit-scrollbar, #powerSubcategories::-webkit-scrollbar, #toolbar::-webkit-scrollbar { display: none; }
-  #powerCategories { justify-content: center; }
-  #powerSubcategories { justify-content: center; }
-  .categoryBtn { flex: 0 0 auto; padding: 6px 10px; font-size: 11px; }
-  .subcategoryBtn { flex: 0 0 auto; padding: 6px 10px; font-size: 10.5px; white-space: nowrap; }
+  #powerCategories { justify-content: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  #powerSubcategories { justify-content: center; padding-bottom: 6px; }
+  .categoryBtn { flex: 0 0 auto; padding: 7px 12px; font-size: 12px; border-radius: 10px; }
+  .categoryBtn.active { box-shadow: 0 2px 8px rgba(242,178,60,.35); }
+  .subcategoryBtn { flex: 0 0 auto; padding: 6px 11px; font-size: 11px; white-space: nowrap; border-radius: 8px; }
 
   /* Icons only in the toolbar, in rounded "app icon" tiles with a soft shadow and a pressed
      state — every tool already has a `title` tooltip carrying its label. */
-  #toolbar { padding: 8px; border-radius: 16px; }
   .toolBtn {
-    flex: 0 0 auto; width: 46px; height: 46px; font-size: 18px; border-radius: 13px;
-    background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    flex: 0 0 auto; width: 48px; height: 48px; font-size: 19px; border-radius: 14px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02));
     box-shadow: 0 2px 4px rgba(0,0,0,.35);
   }
   .toolBtn:active { transform: scale(0.9); }
-  .toolBtn.active { box-shadow: 0 0 10px rgba(242,178,60,0.4), inset 0 0 0 1px var(--accent); }
+  .toolBtn.active { box-shadow: 0 0 10px rgba(242,178,60,0.45), inset 0 0 0 1.5px var(--accent); }
   .toolBtn .lbl { display: none; }
 
-  #speedBar { top: calc(52px + var(--safe-top)); padding: 3px; }
+  #speedBar { top: calc(50px + var(--safe-top)); padding: 3px; }
   .speedBtn, #dayLockBtn { width: 28px; height: 26px; }
-
-  #hud-top { padding: calc(6px + var(--safe-top)) calc(10px + var(--safe-right)) 6px calc(10px + var(--safe-left)); }
-  #topActions button { width: 28px; height: 28px; font-size: 12px; }
 }
