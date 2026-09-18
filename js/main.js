@@ -548,9 +548,31 @@ let diploFirst = null;
 let possessing = null;
 let following = null;
 let humanViewOn = false; // true only when the current possession came from the "Vista humana" button
+// The inspect/"hand" tool has nothing to paint, so its single touch finger pans instead
+// (js/camera.js) rather than being reserved for tool application like every other tool's is.
+rig.isPanTool = () => currentTool === 'inspect';
 
 const toolbar = document.getElementById('toolbar');
 const powerCategories = document.getElementById('powerCategories');
+// Phone-only tool tray: collapsed behind this FAB so the map isn't fighting four stacked rows
+// for screen space (js/main.js's caller — see the "Phone UI" block in style.css — is the only
+// place that actually shows the FAB; on desktop/tablet it's always display:none). Picking a leaf
+// tool closes the tray again; browsing categories/subcategories leaves it open.
+const toolTrayFab = document.getElementById('toolTrayFab');
+const toolTrayFabIcon = document.getElementById('toolTrayFabIcon');
+function syncToolTrayFab() {
+  const def = POWERS.find(p => p.id === currentTool);
+  if (def) toolTrayFabIcon.textContent = def.icon;
+}
+function closeToolTray() {
+  document.body.classList.remove('toolTrayOpen');
+  toolTrayFab.setAttribute('aria-expanded', 'false');
+}
+toolTrayFab.addEventListener('click', () => {
+  const open = document.body.classList.toggle('toolTrayOpen');
+  toolTrayFab.setAttribute('aria-expanded', String(open));
+});
+document.getElementById('toolTrayBackdrop').addEventListener('click', closeToolTray);
 for (const p of POWERS) {
   const btn = document.createElement('button');
   btn.className = 'toolBtn' + (p.id === currentTool ? ' active' : '');
@@ -561,6 +583,8 @@ for (const p of POWERS) {
     currentTool = p.id;
     if (p.id !== 'diplomacy') diploFirst = null;
     document.querySelectorAll('.toolBtn').forEach(b => b.classList.toggle('active', b.dataset.tool === p.id));
+    syncToolTrayFab();
+    closeToolTray();
   });
   toolbar.appendChild(btn);
 }
@@ -575,6 +599,7 @@ function showToolSubset(tools) {
   document.querySelectorAll('.toolBtn').forEach(b => b.classList.toggle('is-hidden', !tools.includes(b.dataset.tool)));
   if (!tools.includes(currentTool)) currentTool = tools[0];
   document.querySelectorAll('.toolBtn').forEach(b => b.classList.toggle('active', b.dataset.tool === currentTool));
+  syncToolTrayFab();
 }
 function selectPowerCategory(categoryId) {
   const category = powerSystem.getCategory(categoryId);

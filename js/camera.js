@@ -26,14 +26,21 @@ export class CameraRig {
     // gesture is in progress, so rotating/zooming never also drags a stray edit across the terrain.
     this._touches = new Map();
     this._pinch = null;
+    this._singleTouchLast = null;
     this.multiTouch = false;
+    // main.js assigns this to `() => currentTool === 'inspect'`: the hand/inspect tool has
+    // nothing to paint or drag-apply, so its single finger is free to pan instead of being
+    // reserved for tool application like every other (paintable) tool's finger is.
+    this.isPanTool = null;
 
     dom.addEventListener('contextmenu', e => e.preventDefault());
     dom.addEventListener('pointerdown', e => {
       if (e.pointerType === 'touch') {
         this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (this._touches.size === 1) this._singleTouchLast = { x: e.clientX, y: e.clientY };
         if (this._touches.size === 2) {
           this.multiTouch = true;
+          this._singleTouchLast = null;
           const [a, b] = [...this._touches.values()];
           this._pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y), midX: (a.x + b.x) / 2, midY: (a.y + b.y) / 2 };
         }
@@ -49,6 +56,7 @@ export class CameraRig {
       if (e.pointerType !== 'touch') return;
       this._touches.delete(e.pointerId);
       if (this._touches.size < 2) { this.multiTouch = false; this._pinch = null; }
+      if (this._touches.size < 1) this._singleTouchLast = null;
     };
     dom.addEventListener('pointerup', e => { this._dragButton = -1; releaseTouch(e); });
     dom.addEventListener('pointercancel', releaseTouch);
@@ -57,7 +65,11 @@ export class CameraRig {
       if (e.pointerType === 'touch') {
         if (!this._touches.has(e.pointerId)) return;
         this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-        if (this._touches.size === 2 && this._pinch) {
+        if (this._touches.size === 1 && this._singleTouchLast && this.isPanTool?.()) {
+          const dx = e.clientX - this._singleTouchLast.x, dy = e.clientY - this._singleTouchLast.y;
+          this._singleTouchLast = { x: e.clientX, y: e.clientY };
+          this._pan(dx, dy);
+        } else if (this._touches.size === 2 && this._pinch) {
           const [a, b] = [...this._touches.values()];
           const dist = Math.hypot(a.x - b.x, a.y - b.y);
           const midX = (a.x + b.x) / 2, midY = (a.y + b.y) / 2;
@@ -77,11 +89,7 @@ export class CameraRig {
         this.azimuth -= dx * 0.0055;
         this.polar = Math.min(Math.PI * 0.49, Math.max(0.08, this.polar - dy * 0.0045));
       } else if (this._dragButton === 1 || this.aerial) {
-        const forward = new THREE.Vector3(Math.sin(this.azimuth), 0, Math.cos(this.azimuth));
-        const right = new THREE.Vector3(forward.z, 0, -forward.x);
-        const scale = this.distance * 0.0016;
-        this.target.addScaledVector(right, -dx * scale);
-        this.target.addScaledVector(forward, dy * scale);
+        this._pan(dx, dy);
       }
     });
     dom.addEventListener('wheel', e => {
@@ -91,6 +99,14 @@ export class CameraRig {
 
     window.addEventListener('keydown', e => { this.keys[e.code] = true; });
     window.addEventListener('keyup', e => { this.keys[e.code] = false; });
+  }
+
+  _pan(dx, dy) {
+    const forward = new THREE.Vector3(Math.sin(this.azimuth), 0, Math.cos(this.azimuth));
+    const right = new THREE.Vector3(forward.z, 0, -forward.x);
+    const scale = this.distance * 0.0016;
+    this.target.addScaledVector(right, -dx * scale);
+    this.target.addScaledVector(forward, dy * scale);
   }
 
   setAerial(active, size = 180, fit = true) {

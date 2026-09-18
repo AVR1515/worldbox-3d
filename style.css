@@ -639,58 +639,94 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
 @media(max-width:1100px) { #topLeft #brand { display:none; } }
 @media(max-width:700px) { #hud-top { justify-content:space-between; } #topLeft { gap:0; } #gameMenuBtn { min-width:80px; height:36px; } }
 
+/* A phone-only FAB/backdrop pair (see index.html + main.js's toolTrayFab). Hidden everywhere
+   else; the phone media query below is the only place that turns them on. */
+#toolTrayFab, #toolTrayBackdrop { display: none; }
+
 /* ==========================================================================
    Phone UI — only phones/small touch devices get this layout; tablets and
    desktop (even resized narrow) keep the existing HUD from the rules above.
    Matches on portrait width OR landscape height, since a phone rotated
    sideways is still a phone (a short max-height, ~500px, is a phone in
-   landscape; a tablet stays taller than that in either orientation) — so
-   the same compact, non-overlapping layout applies in both orientations
-   instead of only fixing portrait and leaving landscape on the desktop HUD.
-   Rebuilt to stop the bottom stack (brush size + category + subcategory +
-   toolbar), the minimap and the on-screen d-pad from overlapping each other,
-   which is what happened when every one of those pieces kept its desktop
-   size and position on a short phone screen.
+   landscape; a tablet stays taller than that in either orientation).
+
+   The whole point is screen real estate: a phone doesn't have room for four
+   permanently stacked rows (brush size, category, subcategory, toolbar) on
+   top of the minimap and d-pad without either overlapping something or
+   burying half the map. So on phone #hud-bottom isn't a permanent HUD strip
+   at all — it's a bottom sheet that stays off-screen (translated below the
+   viewport) until #toolTrayFab is tapped, and slides away again the moment
+   a tool is picked (js/main.js's closeToolTray()). The rest of the time the
+   map gets the whole screen, save for the slim top bar, the small minimap,
+   the d-pad and the one round FAB showing the current tool.
    ========================================================================== */
 @media (pointer: coarse) and (hover: none) and (max-width: 640px),
        (pointer: coarse) and (hover: none) and (max-height: 500px) {
-  /* Minimap moves up next to the speed bar instead of sitting over the
-     bottom toolbar stack — there's no free vertical room for both down there. */
+  /* Minimap: small corner chip, well clear of both the FAB and the d-pad. */
   #minimapWrap {
-    top: calc(88px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
+    top: calc(84px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
     padding: 3px; opacity: 0.94; background: rgba(10,14,22,0.88);
   }
-  #minimapWrap canvas { width: 62px; height: 62px; }
+  #minimapWrap canvas { width: 56px; height: 56px; }
   #minimapWrap span { font-size: 6px; letter-spacing: 0.5px; }
 
-  /* The d-pad moves to mid-left, clear of the bottom stack entirely, since that
-     stack now needs every bit of width/height it can get. Circular, gradient-shaded
-     buttons read as real game-controller keys instead of resized desktop rectangles. */
+  /* The d-pad sits mid-left, out of the way of both the map center and the FAB.
+     Circular, gradient-shaded buttons read as real game-controller keys instead
+     of resized desktop rectangles. */
   #touchControls {
     left: calc(8px + var(--safe-left)); bottom: auto; top: 50%; transform: translateY(-50%);
-    width: 104px; height: 72px; grid-template: repeat(2, 34px) / repeat(3, 34px); gap: 2px;
+    width: 96px; height: 66px; grid-template: repeat(2, 31px) / repeat(3, 31px); gap: 2px;
     background: transparent;
   }
   #touchControls button {
-    border-radius: 50%; background: linear-gradient(160deg, rgba(58,70,88,.85), rgba(15,20,30,.85));
+    border-radius: 50%; background: linear-gradient(160deg, rgba(58,70,88,.8), rgba(15,20,30,.8));
     border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,0.12);
-    font-size: 13px;
+    font-size: 12px;
   }
   #touchControls button:active { background: linear-gradient(160deg, rgba(242,178,60,.5), rgba(15,20,30,.85)); transform: scale(0.92); }
 
-  #hud-bottom { gap: 4px; padding: 5px calc(6px + var(--safe-right)) calc(6px + var(--safe-bottom)) calc(6px + var(--safe-left)); }
+  /* The FAB: always-visible round button showing the current tool's icon, bottom-right,
+     clear of both the d-pad and the minimap. */
+  #toolTrayFab {
+    display: flex; align-items: center; justify-content: center;
+    position: fixed; z-index: 23;
+    right: calc(14px + var(--safe-right)); bottom: calc(14px + var(--safe-bottom));
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(160deg, #ffd884, var(--accent) 60%, #c47f12);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.35);
+    font-size: 24px;
+  }
+  #toolTrayFab:active { transform: scale(0.93); }
+  body.toolTrayOpen #toolTrayFab { box-shadow: 0 0 0 3px rgba(242,178,60,.35), 0 8px 20px rgba(0,0,0,.5); }
 
-  /* Brush size: icon-only label, narrower slider — it was the widest of the four
-     stacked rows for the least essential control. */
-  #brushRow { padding: 2px 7px; gap: 4px; height: 24px; }
+  /* An invisible full-screen tap-to-close layer behind the open tray. */
+  #toolTrayBackdrop { display: block; position: fixed; inset: 0; z-index: 19; background: rgba(2,4,9,0); transition: background 0.2s; pointer-events: none; }
+  body.toolTrayOpen #toolTrayBackdrop { background: rgba(2,4,9,0.4); pointer-events: auto; }
+
+  /* The tray itself: off-screen (below the viewport) until opened, as a rounded bottom sheet. */
+  #hud-bottom {
+    z-index: 21; gap: 4px;
+    padding: 10px calc(10px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(10px + var(--safe-left));
+    background: linear-gradient(180deg, rgba(12,17,27,0.98), rgba(8,11,18,0.99));
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 30px rgba(0,0,0,.5);
+    transform: translateY(105%);
+    transition: transform 0.24s cubic-bezier(.2,.8,.3,1);
+    pointer-events: none;
+  }
+  body.toolTrayOpen #hud-bottom { transform: translateY(0); pointer-events: auto; }
+
+  /* Brush size: icon-only label, narrower slider — least essential row, kept small. */
+  #brushRow { padding: 3px 8px; gap: 5px; }
   #brushRow label { font-size: 0; }
-  #brushRow label::before { content: '🖌️'; font-size: 11px; }
-  #brushRow input[type="range"] { width: 58px; }
-  #brushSizeVal { font-size: 10.5px; }
+  #brushRow label::before { content: '🖌️'; font-size: 12px; }
+  #brushRow input[type="range"] { width: 90px; }
+  #brushSizeVal { font-size: 11px; }
 
-  /* Category/subcategory pills and the toolbar all become single-row horizontal
-     scrollers instead of wrapping — that's what was pushing total stack height
-     past the screen and forcing everything to overlap. */
+  /* Category/subcategory pills and the toolbar are single-row horizontal scrollers instead
+     of wrapping, so the open tray itself stays short. */
   #powerCategories, #powerSubcategories, #toolbar {
     max-width: 100%; width: 100%;
     flex-wrap: nowrap; justify-content: flex-start;
@@ -700,16 +736,15 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
   #powerCategories::-webkit-scrollbar, #powerSubcategories::-webkit-scrollbar, #toolbar::-webkit-scrollbar { display: none; }
   #powerCategories { justify-content: center; }
   #powerSubcategories { justify-content: center; }
-  .categoryBtn { flex: 0 0 auto; padding: 4px 8px; font-size: 10px; }
-  .subcategoryBtn { flex: 0 0 auto; padding: 4px 8px; font-size: 9.5px; white-space: nowrap; }
+  .categoryBtn { flex: 0 0 auto; padding: 6px 10px; font-size: 11px; }
+  .subcategoryBtn { flex: 0 0 auto; padding: 6px 10px; font-size: 10.5px; white-space: nowrap; }
 
   /* Icons only in the toolbar, in rounded "app icon" tiles with a soft shadow and a pressed
-     state — the label under each icon was the single biggest use of vertical space in the whole
-     stack, and every tool already has a `title` tooltip carrying the same text. */
-  #toolbar { padding: 6px; border-radius: 16px; }
+     state — every tool already has a `title` tooltip carrying its label. */
+  #toolbar { padding: 8px; border-radius: 16px; }
   .toolBtn {
-    flex: 0 0 auto; width: 40px; height: 40px; font-size: 16px; border-radius: 12px;
-    background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    flex: 0 0 auto; width: 46px; height: 46px; font-size: 18px; border-radius: 13px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
     box-shadow: 0 2px 4px rgba(0,0,0,.35);
   }
   .toolBtn:active { transform: scale(0.9); }

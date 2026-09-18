@@ -259,6 +259,11 @@
     <button data-touch="up" aria-label="Mover arriba">▲</button><button data-touch="left" aria-label="Mover izquierda">◀</button><button data-touch="down" aria-label="Mover abajo">▼</button><button data-touch="right" aria-label="Mover derecha">▶</button>
   </div>
 
+  <!-- Phone-only: collapsed by default so the map stays visible; tapping it opens #hud-bottom as
+       a bottom sheet, picking a tool closes it again. Invisible outside the phone layout. -->
+  <button id="toolTrayFab" aria-label="Herramientas" aria-expanded="false"><span id="toolTrayFabIcon">✋</span></button>
+  <div id="toolTrayBackdrop"></div>
+
   <div id="hud-bottom">
     <div id="brushRow">
       <label for="brushSize">Tamaño</label>
