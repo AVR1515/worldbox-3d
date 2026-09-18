@@ -1727,7 +1727,9 @@ function inspectAt() {
 }
 
 canvas.addEventListener('pointerdown', e => {
-  if (e.button !== 0 || !gameStarted) return;
+  // A second finger landing starts a rotate/pinch-zoom gesture (js/camera.js) — don't also dab
+  // the current tool down at that second touch point.
+  if (e.button !== 0 || !gameStarted || rig.multiTouch) return;
   setNDC(e);
   pointerDown = true;
   tryApply(true);
@@ -1766,7 +1768,7 @@ canvas.addEventListener('pointermove', e => {
     brushRing.visible = false;
     hoverInfo.classList.remove('show');
   }
-  if (pointerDown) tryApply(false);
+  if (pointerDown && !rig.multiTouch) tryApply(false);
 });
 
 // ---------- Temporary visual effects, tornadoes and war beams now live in vfx.js ----------
@@ -1980,6 +1982,20 @@ syncFullscreenButton();
 // ---------- Resize ----------
 window.addEventListener('resize', () => {
   renderSystem.resize();
+});
+// iOS (especially a standalone home-screen app) can fire 'resize'/'orientationchange' before
+// window.innerWidth/innerHeight have settled on the new orientation's real dimensions, which
+// left the canvas sized for the old orientation — rendering into only part of the new one and
+// leaving the rest as plain unrendered page background. Re-checking a beat later, against
+// visualViewport (more reliable mid-rotation than innerWidth/innerHeight on iOS), catches that.
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    const vv = window.visualViewport;
+    renderSystem.resize(vv?.width || window.innerWidth, vv?.height || window.innerHeight);
+  }, 300);
+});
+window.visualViewport?.addEventListener('resize', () => {
+  renderSystem.resize(window.visualViewport.width, window.visualViewport.height);
 });
 
 // ---------- Main loop ----------

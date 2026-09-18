@@ -642,37 +642,51 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
 /* ==========================================================================
    Phone UI — only phones/small touch devices get this layout; tablets and
    desktop (even resized narrow) keep the existing HUD from the rules above.
+   Matches on portrait width OR landscape height, since a phone rotated
+   sideways is still a phone (a short max-height, ~500px, is a phone in
+   landscape; a tablet stays taller than that in either orientation) — so
+   the same compact, non-overlapping layout applies in both orientations
+   instead of only fixing portrait and leaving landscape on the desktop HUD.
    Rebuilt to stop the bottom stack (brush size + category + subcategory +
    toolbar), the minimap and the on-screen d-pad from overlapping each other,
    which is what happened when every one of those pieces kept its desktop
    size and position on a short phone screen.
    ========================================================================== */
-@media (max-width: 640px) and (pointer: coarse) {
+@media (pointer: coarse) and (hover: none) and (max-width: 640px),
+       (pointer: coarse) and (hover: none) and (max-height: 500px) {
   /* Minimap moves up next to the speed bar instead of sitting over the
      bottom toolbar stack — there's no free vertical room for both down there. */
   #minimapWrap {
-    top: calc(92px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
-    padding: 3px; opacity: 0.92;
+    top: calc(88px + var(--safe-top)); right: calc(8px + var(--safe-right)); bottom: auto;
+    padding: 3px; opacity: 0.94; background: rgba(10,14,22,0.88);
   }
-  #minimapWrap canvas { width: 78px; height: 78px; }
-  #minimapWrap span { font-size: 7px; letter-spacing: 1px; }
+  #minimapWrap canvas { width: 62px; height: 62px; }
+  #minimapWrap span { font-size: 6px; letter-spacing: 0.5px; }
 
   /* The d-pad moves to mid-left, clear of the bottom stack entirely, since that
-     stack now needs every bit of width/height it can get. */
+     stack now needs every bit of width/height it can get. Circular, gradient-shaded
+     buttons read as real game-controller keys instead of resized desktop rectangles. */
   #touchControls {
-    left: calc(10px + var(--safe-left)); bottom: auto; top: 50%; transform: translateY(-50%);
-    width: 118px; height: 84px; grid-template: repeat(2, 38px) / repeat(3, 38px);
-    opacity: 0.82;
+    left: calc(8px + var(--safe-left)); bottom: auto; top: 50%; transform: translateY(-50%);
+    width: 104px; height: 72px; grid-template: repeat(2, 34px) / repeat(3, 34px); gap: 2px;
+    background: transparent;
   }
+  #touchControls button {
+    border-radius: 50%; background: linear-gradient(160deg, rgba(58,70,88,.85), rgba(15,20,30,.85));
+    border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,0.12);
+    font-size: 13px;
+  }
+  #touchControls button:active { background: linear-gradient(160deg, rgba(242,178,60,.5), rgba(15,20,30,.85)); transform: scale(0.92); }
 
-  #hud-bottom { gap: 5px; padding: 6px calc(8px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(8px + var(--safe-left)); }
+  #hud-bottom { gap: 4px; padding: 5px calc(6px + var(--safe-right)) calc(6px + var(--safe-bottom)) calc(6px + var(--safe-left)); }
 
   /* Brush size: icon-only label, narrower slider — it was the widest of the four
      stacked rows for the least essential control. */
-  #brushRow { padding: 3px 8px; gap: 5px; }
+  #brushRow { padding: 2px 7px; gap: 4px; height: 24px; }
   #brushRow label { font-size: 0; }
-  #brushRow label::before { content: '🖌️'; font-size: 13px; }
-  #brushRow input[type="range"] { width: 74px; }
+  #brushRow label::before { content: '🖌️'; font-size: 11px; }
+  #brushRow input[type="range"] { width: 58px; }
+  #brushSizeVal { font-size: 10.5px; }
 
   /* Category/subcategory pills and the toolbar all become single-row horizontal
      scrollers instead of wrapping — that's what was pushing total stack height
@@ -686,14 +700,25 @@ button:focus-visible { outline:2px solid #ffda8b; outline-offset:4px; }
   #powerCategories::-webkit-scrollbar, #powerSubcategories::-webkit-scrollbar, #toolbar::-webkit-scrollbar { display: none; }
   #powerCategories { justify-content: center; }
   #powerSubcategories { justify-content: center; }
-  .categoryBtn { flex: 0 0 auto; padding: 5px 9px; font-size: 10.5px; }
-  .subcategoryBtn { flex: 0 0 auto; padding: 5px 9px; font-size: 10px; white-space: nowrap; }
+  .categoryBtn { flex: 0 0 auto; padding: 4px 8px; font-size: 10px; }
+  .subcategoryBtn { flex: 0 0 auto; padding: 4px 8px; font-size: 9.5px; white-space: nowrap; }
 
-  /* Icons only in the toolbar — the label under each icon was the single biggest
-     use of vertical space in the whole stack, and every tool already has a
-     `title` tooltip carrying the same text. */
-  .toolBtn { flex: 0 0 auto; width: 46px; height: 46px; font-size: 18px; }
+  /* Icons only in the toolbar, in rounded "app icon" tiles with a soft shadow and a pressed
+     state — the label under each icon was the single biggest use of vertical space in the whole
+     stack, and every tool already has a `title` tooltip carrying the same text. */
+  #toolbar { padding: 6px; border-radius: 16px; }
+  .toolBtn {
+    flex: 0 0 auto; width: 40px; height: 40px; font-size: 16px; border-radius: 12px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    box-shadow: 0 2px 4px rgba(0,0,0,.35);
+  }
+  .toolBtn:active { transform: scale(0.9); }
+  .toolBtn.active { box-shadow: 0 0 10px rgba(242,178,60,0.4), inset 0 0 0 1px var(--accent); }
   .toolBtn .lbl { display: none; }
 
-  #speedBar { top: calc(54px + var(--safe-top)); }
+  #speedBar { top: calc(52px + var(--safe-top)); padding: 3px; }
+  .speedBtn, #dayLockBtn { width: 28px; height: 26px; }
+
+  #hud-top { padding: calc(6px + var(--safe-top)) calc(10px + var(--safe-right)) 6px calc(10px + var(--safe-left)); }
+  #topActions button { width: 28px; height: 28px; font-size: 12px; }
 }

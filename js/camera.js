@@ -18,18 +18,58 @@ export class CameraRig {
     this.keys = {};
     this._dragButton = -1;
     this._lastX = 0; this._lastY = 0;
+    // A single finger is reserved for painting/applying the current tool (js/main.js's own
+    // pointerdown/pointermove on the canvas already does that, mirroring left-click on desktop).
+    // Two fingers rotate + pinch-zoom instead — the touch equivalent of right-click-drag + wheel —
+    // so touch devices get camera control without a finger ever being ambiguous between "paint"
+    // and "look around". `multiTouch` lets main.js suppress tool application while a two-finger
+    // gesture is in progress, so rotating/zooming never also drags a stray edit across the terrain.
+    this._touches = new Map();
+    this._pinch = null;
+    this.multiTouch = false;
 
     dom.addEventListener('contextmenu', e => e.preventDefault());
     dom.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch') {
+        this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (this._touches.size === 2) {
+          this.multiTouch = true;
+          const [a, b] = [...this._touches.values()];
+          this._pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y), midX: (a.x + b.x) / 2, midY: (a.y + b.y) / 2 };
+        }
+        return;
+      }
       if (e.button === 2 || e.button === 1) {
         this._dragButton = e.button;
         this._lastX = e.clientX; this._lastY = e.clientY;
         dom.setPointerCapture(e.pointerId);
       }
     });
-    dom.addEventListener('pointerup', e => { this._dragButton = -1; });
-    dom.addEventListener('pointerleave', () => { this._dragButton = -1; });
+    const releaseTouch = e => {
+      if (e.pointerType !== 'touch') return;
+      this._touches.delete(e.pointerId);
+      if (this._touches.size < 2) { this.multiTouch = false; this._pinch = null; }
+    };
+    dom.addEventListener('pointerup', e => { this._dragButton = -1; releaseTouch(e); });
+    dom.addEventListener('pointercancel', releaseTouch);
+    dom.addEventListener('pointerleave', e => { this._dragButton = -1; releaseTouch(e); });
     dom.addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') {
+        if (!this._touches.has(e.pointerId)) return;
+        this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (this._touches.size === 2 && this._pinch) {
+          const [a, b] = [...this._touches.values()];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          const midX = (a.x + b.x) / 2, midY = (a.y + b.y) / 2;
+          this.distance = Math.min(this.maxDist, Math.max(this.minDist, this.distance * (this._pinch.dist / Math.max(1, dist))));
+          if (!this.aerial) {
+            this.azimuth -= (midX - this._pinch.midX) * 0.0055;
+            this.polar = Math.min(Math.PI * 0.49, Math.max(0.08, this.polar - (midY - this._pinch.midY) * 0.0045));
+          }
+          this._pinch = { dist, midX, midY };
+        }
+        return;
+      }
       if (this._dragButton === -1) return;
       const dx = e.clientX - this._lastX, dy = e.clientY - this._lastY;
       this._lastX = e.clientX; this._lastY = e.clientY;
