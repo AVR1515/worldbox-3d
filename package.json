@@ -6,13 +6,14 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 8080",
-    "build": "vite build",
+    "build": "vite build && node scripts/copy-assets.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 8080",
     "test": "vitest run && playwright test",
     "test:unit": "vitest run",
     "test:soak": "vitest run tests/unit/phase6-7.test.js -t \"ocho horas\"",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "package:hostinger": "vite build && node scripts/copy-assets.mjs --zip"
   },
   "dependencies": {
     "three": "0.160.0",

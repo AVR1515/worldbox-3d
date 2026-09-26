@@ -99,3 +99,13 @@ Las pruebas unitarias cubren migraciones, familias, genes, adaptación, subespec
 ## Hoja de ruta
 
 El trabajo en curso (saneamiento técnico, atmósfera y materiales, modelos 3D reales, rendimiento avanzado, contenido nuevo, accesibilidad) está documentado en [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Publicar en Hostinger (o cualquier hosting estático)
+
+El juego es 100 % cliente: no necesita servidor ni base de datos (las partidas se guardan en el navegador de cada jugador).
+
+1. Requisito único: [Node.js 20+](https://nodejs.org).
+2. Ejecuta `install.bat` (Windows) o `./install.sh` (Linux/Mac). Instala las dependencias y genera `worldbox3d-hostinger.zip`.
+   - Alternativa sin instalar nada: en GitHub → Actions → "Paquete Hostinger" → Run workflow y descarga el zip del artefacto.
+3. En Hostinger: hPanel → Administrador de archivos → `public_html` → sube el zip y pulsa **Extraer**.
+4. Abre tu dominio. Sirve también desde una subcarpeta.

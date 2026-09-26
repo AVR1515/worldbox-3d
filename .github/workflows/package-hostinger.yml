@@ -1,0 +1,23 @@
+name: Paquete Hostinger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run package:hostinger
+      - uses: actions/upload-artifact@v4
+        with:
+          name: worldbox3d-hostinger
+          path: worldbox3d-hostinger.zip
