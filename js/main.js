@@ -81,6 +81,16 @@ const gamepadInput = new GamepadInput({
     const next = steps[Math.max(0, Math.min(steps.length - 1, steps.indexOf(simSpeed) + direction))];
     if (next !== undefined) setSimSpeed(next);
   },
+  // Whichever menu/dialog is currently on screen, front to back: the main menu and map creator
+  // have no overlap with the rest (they only show before/instead of a running game), then the
+  // pause menu, then any of the smaller floating panels. D-pad up/down walks its buttons and A
+  // "clicks" the focused one — otherwise a controller has no way to trigger what Enter/click do.
+  menuRoot: () => {
+    if (!mainMenu.classList.contains('hidden')) return mainMenu;
+    if (!mapCreator.classList.contains('hidden')) return mapCreator;
+    if (!pauseMenu.classList.contains('hidden')) return pauseMenu;
+    return document.querySelector('.sidePanel:not(.hidden), #inspectPanel:not(.hidden), #empiresPanel:not(.hidden), #helpModal:not(.hidden)');
+  },
 });
 
 // ---------- Brush ring indicator ----------

@@ -9,7 +9,12 @@ const DEADZONE = 0.18;
 
 // Standard gamepad mapping (https://www.w3.org/TR/gamepad/#remapping): true for both Xbox and
 // PlayStation controllers in Chromium/Edge, which is what this project tests against.
-const BUTTON = { A: 0, B: 1, LT: 6, RT: 7, START: 9, DPAD_LEFT: 14, DPAD_RIGHT: 15 };
+const BUTTON = { A: 0, B: 1, LT: 6, RT: 7, START: 9, DPAD_UP: 12, DPAD_DOWN: 13, DPAD_LEFT: 14, DPAD_RIGHT: 15 };
+
+// Selector for anything a menu/dialog would want the D-pad to be able to land focus on.
+// Visibility (offsetParent !== null) is checked separately once elements are pulled out of a
+// concrete root, since that requires layout that jsdom/mocks in tests don't always provide.
+const FOCUSABLE_SELECTOR = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 function applyDeadzone(value, deadzone = DEADZONE) {
   const magnitude = Math.abs(value);
@@ -42,20 +47,30 @@ export function readGamepadIntent(gamepad, previousPressed = new Set()) {
     startJustPressed: justPressed(BUTTON.START),
     speedDownJustPressed: justPressed(BUTTON.DPAD_LEFT),
     speedUpJustPressed: justPressed(BUTTON.DPAD_RIGHT),
+    navigateUpJustPressed: justPressed(BUTTON.DPAD_UP),
+    navigateDownJustPressed: justPressed(BUTTON.DPAD_DOWN),
     nowPressed,
   };
 }
 
 export class GamepadInput {
-  constructor({ rig, toast = () => {}, onStart = () => {}, onConfirm = () => {}, onBack = () => {}, onSpeedChange = () => {} } = {}) {
+  // menuRoot(): returns the currently visible menu/dialog element (pause menu, main menu, a side
+  // panel, ...) or null/undefined when none is open. While it returns an element, the D-pad drives
+  // focus between that element's focusable children instead of the camera, and A "clicks" whichever
+  // one is currently focused — the same thing Enter/Space already do for a mouse-and-keyboard user,
+  // which a gamepad has no way to trigger on its own since browsers don't turn button presses into
+  // clicks.
+  constructor({ rig, toast = () => {}, onStart = () => {}, onConfirm = () => {}, onBack = () => {}, onSpeedChange = () => {}, menuRoot = () => null } = {}) {
     this.rig = rig;
     this.toast = toast;
     this.onStart = onStart;
     this.onConfirm = onConfirm;
     this.onBack = onBack;
     this.onSpeedChange = onSpeedChange;
+    this.menuRoot = menuRoot;
     this._pressed = new Set();
     this._padIndex = null;
+    this._lastMenuRoot = null;
     // Which of rig.keys' WASD entries *this module* last set to true — so a connected-but-idle
     // gamepad (stick centered) never stomps real keyboard input on the same rig.keys object: we
     // only ever release a key we ourselves pressed, never one the keyboard listener is holding.
@@ -82,6 +97,31 @@ export class GamepadInput {
     return null;
   }
 
+  // Elements in `root` a D-pad press can land focus on, in document order (top-to-bottom for
+  // every menu/panel in this project's markup), filtered down to what's actually visible right
+  // now (display:none collapses offsetParent to null; a plain mock root in tests has neither
+  // property, so both checks default to "visible" rather than throwing).
+  _focusableIn(root) {
+    if (!root?.querySelectorAll) return [];
+    return Array.from(root.querySelectorAll(FOCUSABLE_SELECTOR)).filter(el => el.offsetParent !== null || el.offsetParent === undefined);
+  }
+
+  _navigateMenu(root, intent) {
+    const items = this._focusableIn(root);
+    if (!items.length) return;
+    const isNewMenu = root !== this._lastMenuRoot;
+    this._lastMenuRoot = root;
+    const explicitNav = intent.navigateDownJustPressed || intent.navigateUpJustPressed;
+    // Auto-focus the first item the moment a menu appears, but only on a frame that isn't itself
+    // a D-pad press — otherwise that same press would land on item 0 and then immediately step to
+    // item 1, since the code below still runs afterwards.
+    if (isNewMenu && !explicitNav && !items.includes(document.activeElement)) items[0].focus();
+    const idx = items.indexOf(document.activeElement);
+    if (intent.navigateDownJustPressed) items[idx < 0 ? 0 : (idx + 1) % items.length].focus();
+    else if (intent.navigateUpJustPressed) items[idx < 0 ? items.length - 1 : (idx - 1 + items.length) % items.length].focus();
+    if (intent.confirmJustPressed && items.includes(document.activeElement)) document.activeElement.click();
+  }
+
   update(dt, { allowCamera = true } = {}) {
     const gamepad = this._activeGamepad();
     if (!gamepad) return;
@@ -89,7 +129,14 @@ export class GamepadInput {
     if (!intent) return;
     this._pressed = intent.nowPressed;
 
-    if (this.rig) {
+    const menu = this.menuRoot();
+    if (menu) {
+      this._navigateMenu(menu, intent);
+    } else {
+      this._lastMenuRoot = null;
+    }
+
+    if (!menu && this.rig) {
       const wanted = allowCamera
         ? { KeyW: intent.moveY < 0, KeyS: intent.moveY > 0, KeyA: intent.moveX < 0, KeyD: intent.moveX > 0 }
         : { KeyW: false, KeyS: false, KeyA: false, KeyD: false };

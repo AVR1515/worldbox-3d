@@ -151,4 +151,92 @@ describe('GamepadInput', () => {
     expect(() => input.update(1 / 60)).not.toThrow();
     expect(rig.keys.KeyW).toBeUndefined();
   });
+
+  // Fake DOM: just enough of an element/document pair for _focusableIn/_navigateMenu to walk
+  // (querySelectorAll, focus(), click(), document.activeElement) without pulling in jsdom.
+  function fakeMenu(count) {
+    let activeElement = null;
+    const buttons = [];
+    for (let i = 0; i < count; i++) {
+      const btn = { clicks: 0, offsetParent: {}, focus() { activeElement = btn; }, click() { btn.clicks++; } };
+      buttons.push(btn);
+    }
+    const root = { querySelectorAll: () => buttons };
+    vi.stubGlobal('document', { get activeElement() { return activeElement; } });
+    return { root, buttons };
+  }
+
+  it('al abrirse un menú, el D-pad enfoca el primer botón en vez de mover la cámara', () => {
+    const rig = makeRig();
+    const { root, buttons } = fakeMenu(3);
+    withPad(pad({ axes: [1, 1, 0, 0] })); // pediría KeyD/KeyS si la cámara no estuviera bloqueada
+    const input = new GamepadInput({ rig, menuRoot: () => root });
+
+    input.update(1 / 60, { allowCamera: true });
+    expect(document.activeElement).toBe(buttons[0]);
+    expect(rig.keys.KeyD).toBeUndefined();
+    expect(rig.keys.KeyS).toBeUndefined();
+  });
+
+  it('el D-pad arriba/abajo recorre los botones del menú y envuelve en los extremos', () => {
+    const rig = makeRig();
+    const { root, buttons } = fakeMenu(3);
+    const input = new GamepadInput({ rig, menuRoot: () => root });
+
+    withPad(pad({ buttons: { 13: true } })); // abajo: del ninguno al primero
+    input.update(1 / 60);
+    expect(document.activeElement).toBe(buttons[0]);
+
+    withPad(pad({ buttons: { 13: true } })); // sigue pulsado: no avanza dos veces por el mismo toque
+    input.update(1 / 60);
+    expect(document.activeElement).toBe(buttons[0]);
+
+    withPad(pad({ buttons: {} }));
+    input.update(1 / 60);
+    withPad(pad({ buttons: { 13: true } })); // abajo de nuevo: al segundo
+    input.update(1 / 60);
+    expect(document.activeElement).toBe(buttons[1]);
+
+    withPad(pad({ buttons: {} }));
+    input.update(1 / 60);
+    withPad(pad({ buttons: { 12: true } })); // arriba: de vuelta al primero
+    input.update(1 / 60);
+    expect(document.activeElement).toBe(buttons[0]);
+
+    withPad(pad({ buttons: {} }));
+    input.update(1 / 60);
+    withPad(pad({ buttons: { 12: true } })); // arriba desde el primero: envuelve al último
+    input.update(1 / 60);
+    expect(document.activeElement).toBe(buttons[2]);
+  });
+
+  it('A "clickea" el botón del menú actualmente enfocado', () => {
+    const rig = makeRig();
+    const { root, buttons } = fakeMenu(2);
+    const input = new GamepadInput({ rig, menuRoot: () => root });
+
+    withPad(pad({ buttons: { 13: true } })); // enfoca el primero
+    input.update(1 / 60);
+    withPad(pad({ buttons: {} }));
+    input.update(1 / 60);
+    withPad(pad({ buttons: { 0: true } })); // A
+    input.update(1 / 60);
+    expect(buttons[0].clicks).toBe(1);
+    expect(buttons[1].clicks).toBe(0);
+  });
+
+  it('al cerrarse el menú, el mando vuelve a mover la cámara con normalidad', () => {
+    const rig = makeRig();
+    const { root } = fakeMenu(2);
+    let open = true;
+    const input = new GamepadInput({ rig, menuRoot: () => (open ? root : null) });
+
+    withPad(pad({ axes: [1, 0, 0, 0] }));
+    input.update(1 / 60);
+    expect(rig.keys.KeyD).toBeUndefined(); // bloqueado mientras el menú está abierto
+
+    open = false;
+    input.update(1 / 60);
+    expect(rig.keys.KeyD).toBe(true); // el menú se cerró: el stick vuelve a mover la cámara
+  });
 });
