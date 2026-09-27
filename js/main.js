@@ -71,27 +71,73 @@ const rig = new CameraRig(camera, renderer.domElement, new THREE.Vector3(0, 0, 0
 // onStart dispatches a synthetic Escape instead of duplicating the close-priority chain (settings
 // → save manager → help → map creator → pause menu → open pause menu) the real Escape key already
 // implements a few hundred lines down — one Start press should behave exactly like one Escape tap.
+//
+// The power/tool dock (category tabs, subcategory tabs, tool icons) and the top-right action icons
+// (aerial view, fullscreen, layers, empires, history...) are always on screen during play — they're
+// not a dialog, so they'd never show up through menuRoot() on their own. LB toggles "menu mode" for
+// them: while it's on, D-pad up/down walks that combined list and A clicks the focused one, exactly
+// like any other dialog; the left stick stops driving the camera meanwhile so the D-pad press isn't
+// fighting a pan. Opening a real panel (layers/empires/history) from inside menu mode hands control
+// straight to that panel next frame, since menuRoot() below checks real dialogs first.
+let gamepadMenuMode = false;
+function gamepadMenuModeRoot() {
+  return {
+    querySelectorAll: () => [
+      ...document.querySelectorAll('#topActions button'),
+      ...document.querySelectorAll('.categoryBtn'),
+      ...document.querySelectorAll('.subcategoryBtn'),
+      ...document.querySelectorAll('.toolBtn'),
+    ],
+  };
+}
 const gamepadInput = new GamepadInput({
   rig, toast,
   onStart: () => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape' })),
-  onBack: () => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape' })),
+  onBack: () => {
+    if (gamepadMenuMode && !interfaceBlocksGame()) { gamepadMenuMode = false; return; }
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape' }));
+  },
   onSpeedChange: direction => {
     if (!gameStarted) return;
     const steps = [0, 1, 2, 4, 8];
     const next = steps[Math.max(0, Math.min(steps.length - 1, steps.indexOf(simSpeed) + direction))];
     if (next !== undefined) setSimSpeed(next);
   },
+  onToggleMenuMode: () => {
+    if (!gameStarted || interfaceBlocksGame()) return; // solo tiene sentido en partida y sin diálogos abiertos
+    gamepadMenuMode = !gamepadMenuMode;
+    toast(gamepadMenuMode ? '🎮 Menú del mando (LB para volver a la cámara)' : '🎮 Cámara del mando');
+  },
   // Whichever menu/dialog is currently on screen, front to back: the main menu and map creator
   // have no overlap with the rest (they only show before/instead of a running game), then the
-  // pause menu, then any of the smaller floating panels. D-pad up/down walks its buttons and A
-  // "clicks" the focused one — otherwise a controller has no way to trigger what Enter/click do.
+  // pause menu, then any of the smaller floating panels, then — only while gamepadMenuMode is on —
+  // the dock above. D-pad up/down walks its buttons and A "clicks" the focused one — otherwise a
+  // controller has no way to trigger what Enter/click do.
   menuRoot: () => {
     if (!mainMenu.classList.contains('hidden')) return mainMenu;
     if (!mapCreator.classList.contains('hidden')) return mapCreator;
     if (!pauseMenu.classList.contains('hidden')) return pauseMenu;
-    return document.querySelector('.sidePanel:not(.hidden), #inspectPanel:not(.hidden), #empiresPanel:not(.hidden), #helpModal:not(.hidden)');
+    const panel = document.querySelector('.sidePanel:not(.hidden), #inspectPanel:not(.hidden), #empiresPanel:not(.hidden), #helpModal:not(.hidden)');
+    if (panel) return panel;
+    if (gamepadMenuMode && gameStarted) return gamepadMenuModeRoot();
+    return null;
   },
 });
+
+// The heavy game loop (`animate()`, below) only starts once a world is loaded/restored, so without
+// this the main menu and map creator would be gamepad-dead on a fresh page load — nothing would
+// ever call gamepadInput.update() before the player had already gotten a world running with mouse
+// or keyboard. Poll on this dedicated rAF loop until `animate()` takes over (it runs forever once
+// started, covering every later trip back to the main menu too), then stop for good.
+let gamepadPreGameLast = performance.now();
+function pollGamepadBeforeGameLoop() {
+  if (animating) return;
+  requestAnimationFrame(pollGamepadBeforeGameLoop);
+  const now = performance.now();
+  gamepadInput.update(Math.min(0.1, (now - gamepadPreGameLast) / 1000), { allowCamera: false });
+  gamepadPreGameLast = now;
+}
+requestAnimationFrame(pollGamepadBeforeGameLoop);
 
 // ---------- Brush ring indicator ----------
 const ringGeo = new THREE.RingGeometry(0.92, 1, 40);
@@ -424,6 +470,7 @@ document.getElementById('exitToMenuBtn').addEventListener('click', async e => {
     clearPause();
     disposeSimulation();
     gameStarted = false;
+    gamepadMenuMode = false;
     document.getElementById('minimapWrap').classList.add('hidden');
     markActiveTab(false);
     mainMenu.classList.remove('hidden');
