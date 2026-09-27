@@ -3,13 +3,16 @@
 // applied by pointing the mouse/finger at the terrain, and adding a full on-screen reticle plus
 // raycast-from-reticle plumbing is a much bigger feature than "add controller support" implies —
 // so this covers camera (left stick pans exactly like WASD, right stick looks around, triggers
-// zoom) and menu navigation (Start opens/closes the pause menu via the same priority chain Escape
-// already uses, D-pad left/right cycles simulation speed).
+// zoom), menu/dialog navigation (D-pad up/down moves focus, A "clicks" it, Start/B mirror Escape),
+// simulation speed (D-pad left/right), and — via LB, which toggles "menu mode" for whatever HUD
+// root main.js currently reports (the power/tool dock when nothing else is open) — selecting game
+// options that live outside a dialog, the same way.
+
 const DEADZONE = 0.18;
 
 // Standard gamepad mapping (https://www.w3.org/TR/gamepad/#remapping): true for both Xbox and
 // PlayStation controllers in Chromium/Edge, which is what this project tests against.
-const BUTTON = { A: 0, B: 1, LT: 6, RT: 7, START: 9, DPAD_UP: 12, DPAD_DOWN: 13, DPAD_LEFT: 14, DPAD_RIGHT: 15 };
+const BUTTON = { A: 0, B: 1, LB: 4, LT: 6, RT: 7, START: 9, DPAD_UP: 12, DPAD_DOWN: 13, DPAD_LEFT: 14, DPAD_RIGHT: 15 };
 
 // Selector for anything a menu/dialog would want the D-pad to be able to land focus on.
 // Visibility (offsetParent !== null) is checked separately once elements are pulled out of a
@@ -49,6 +52,7 @@ export function readGamepadIntent(gamepad, previousPressed = new Set()) {
     speedUpJustPressed: justPressed(BUTTON.DPAD_RIGHT),
     navigateUpJustPressed: justPressed(BUTTON.DPAD_UP),
     navigateDownJustPressed: justPressed(BUTTON.DPAD_DOWN),
+    toggleMenuModeJustPressed: justPressed(BUTTON.LB),
     nowPressed,
   };
 }
@@ -60,13 +64,14 @@ export class GamepadInput {
   // one is currently focused — the same thing Enter/Space already do for a mouse-and-keyboard user,
   // which a gamepad has no way to trigger on its own since browsers don't turn button presses into
   // clicks.
-  constructor({ rig, toast = () => {}, onStart = () => {}, onConfirm = () => {}, onBack = () => {}, onSpeedChange = () => {}, menuRoot = () => null } = {}) {
+  constructor({ rig, toast = () => {}, onStart = () => {}, onConfirm = () => {}, onBack = () => {}, onSpeedChange = () => {}, onToggleMenuMode = () => {}, menuRoot = () => null } = {}) {
     this.rig = rig;
     this.toast = toast;
     this.onStart = onStart;
     this.onConfirm = onConfirm;
     this.onBack = onBack;
     this.onSpeedChange = onSpeedChange;
+    this.onToggleMenuMode = onToggleMenuMode;
     this.menuRoot = menuRoot;
     this._pressed = new Set();
     this._padIndex = null;
@@ -159,5 +164,6 @@ export class GamepadInput {
     if (intent.backJustPressed) this.onBack();
     if (intent.speedDownJustPressed) this.onSpeedChange(-1);
     if (intent.speedUpJustPressed) this.onSpeedChange(1);
+    if (intent.toggleMenuModeJustPressed) this.onToggleMenuMode();
   }
 }
